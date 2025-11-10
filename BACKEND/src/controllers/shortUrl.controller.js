@@ -9,7 +9,7 @@ const createShortUrl = asyncHandler( async (req, res, next) => {
     // const shortUrl = "KGoPAkS";
     const shortUrl = await generateNanoId(7);
     await saveShortUrl(shortUrl, url);
-    res.send(process.env.APP_URL + "url/" + shortUrl);
+    res.send(process.env.APP_URL + shortUrl);
 });
 
 const redirectFromShortUrl = asyncHandler(async (req,res)=>{
@@ -20,7 +20,7 @@ const redirectFromShortUrl = asyncHandler(async (req,res)=>{
     if(shortUrl){
         res.redirect(shortUrl.full_url)
     }else{
-        res.sendStatus(404).json({message:"url not found"})
+        res.status(404).json({message:"url not found"})
     }
 })
 
