@@ -9,7 +9,7 @@ const createShortUrl = asyncHandler( async (req, res, next) => {
     // const shortUrl = "KGoPAkS";
     const shortUrl = await generateNanoId(7);
     await saveShortUrl(shortUrl, url);
-    res.send(process.env.APP_URL + shortUrl);
+    res.status(200).json({short_url:process.env.APP_URL + shortUrl});
 });
 
 const redirectFromShortUrl = asyncHandler(async (req,res)=>{

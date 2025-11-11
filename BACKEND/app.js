@@ -6,9 +6,11 @@ import urlSchema from "./src/models/shortUrl.model.js";
 import shortUrlRouter from "./src/routes/shortUrl.route.js";
 import {redirectFromShortUrl} from "./src/controllers/shortUrl.controller.js"
 import { errorHandler } from "./src/utils/errorHandler.js";
+import cors from "cors";
 configDotenv()
-const app = express();
 
+const app = express();
+app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({extended:true}))
 
