@@ -10,7 +10,7 @@ const registerUser = asyncHandler(async (req, res) => {
   if (user) throw new ConflictError("User already exists");
   const newUser = await createUser(name, email, password);
   const token = await signToken({ id: newUser._id });
-  req.user = user;
+  req.user = newUser;
   res.cookie("accessToken", token, cookieOptions);
   res.status(200).json({ message: "account created successfully" });
 });

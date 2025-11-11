@@ -1,8 +1,6 @@
 import express from "express";
-import { nanoid } from "nanoid";
 import { configDotenv} from "dotenv";
 import connectDB from "./src/config/mongo.config.js";
-import urlSchema from "./src/models/shortUrl.model.js";
 import shortUrlRouter from "./src/routes/shortUrl.route.js";
 // import router from "./src/routes/auth.route.js";
 import authRouter from "./src/routes/auth.routes.js"
@@ -14,7 +12,10 @@ import { attachUserMiddleware } from "./src/middleware/auth.middleware.js";
 configDotenv()
 
 const app = express();
-app.use(cors());
+app.use(cors({
+    origin: process.env.FRONTEND_URL,
+    credentials: true 
+}));
 app.use(express.json());
 app.use(express.urlencoded({extended:true}))
 app.use(cookieParser())
