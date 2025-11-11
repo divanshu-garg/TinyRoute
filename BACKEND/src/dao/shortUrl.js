@@ -17,3 +17,9 @@ export const saveShortUrl = async (shortUrl, longUrl, userid) => {
 export const getShortUrl = async (id) => {
   return await urlSchema.findOneAndUpdate({ short_url: id }, { $inc: { clicks: 1 } });
 };
+
+export const checkSlugExists = async(slug) =>{
+  const urlExists = await urlSchema.findOne({short_url:slug});
+  return urlExists ? true : false;
+
+}

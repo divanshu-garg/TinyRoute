@@ -3,13 +3,13 @@ import { createShortUrl } from "../api/shortUrl.api.js";
 
 const UrlForm = () => {
 //   const [loading, setLoading] = useState(false);
-  const [url, setUrl] = useState("");
+  const [longUrl, setLongUrl] = useState("");
   const [shortUrl, setShortUrl] = useState("");
   const [copied, setCopied] = useState(false)
-  console.log(url);
+  console.log(longUrl);
 
   const handleSubmit = async () => {
-    const data = await createShortUrl(url)
+    const data = await createShortUrl(longUrl)
     console.log(data);
     await setShortUrl(data.short_url);
   };
@@ -35,8 +35,8 @@ const UrlForm = () => {
           <input
             type="url"
             id="url"
-            value={url}
-            onChange={(e) => setUrl(() => e.target.value)}
+            value={longUrl}
+            onChange={(e) => setLongUrl(() => e.target.value)}
             placeholder="https://example.com"
             className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition"
             required
