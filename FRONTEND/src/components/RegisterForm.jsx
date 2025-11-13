@@ -1,7 +1,13 @@
 import React, { useState } from 'react';
 import { registerUser } from '../api/user.api.js';
+import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from '@tanstack/react-router';
+import { login } from '../store/slices/authSlice.js';
 
 function RegisterForm({setShowLoginComponent}) {
+    const auth = useSelector((state)=> state.auth)
+    const dispatch = useDispatch()
+    const navigate = useNavigate()
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -22,10 +28,15 @@ function RegisterForm({setShowLoginComponent}) {
     setError('');
 
     try {
-      const response = await registerUser(formData.name, formData.email, formData.password);
-      console.log('Registration successful:', response);
+      const user = await registerUser(formData.name, formData.email, formData.password);
+      if(user){
+        console.log('Registration successful:', user);
+        dispatch(login(user))
+        navigate({to:"/dashboard"})
+      }
       // Handle successful registration (redirect, show success message, etc.)
     } catch (err) {
+      console.log("an error occured during registration:", err);
       setError(err.response?.data?.message || 'Registration failed. Please try again.');
     } finally {
       setLoading(false);

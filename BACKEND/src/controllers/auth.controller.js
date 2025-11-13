@@ -23,7 +23,12 @@ const loginUser = asyncHandler(async (req, res) => {
   const token = await signToken({ id: user._id });
   req.user = user
   res.cookie("accessToken", token, cookieOptions);
-  res.status(200).json({ message: "login successful" });
+  const userObj = {
+    name:user.name,
+    email: user.email,
+    _id:user._id
+  };
+  res.status(200).json({ user:userObj, message: "login successful" });
 });
 
 export { registerUser, loginUser };
