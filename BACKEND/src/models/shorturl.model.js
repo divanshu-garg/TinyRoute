@@ -19,6 +19,10 @@ const shortUrlSchema = new mongoose.Schema({
     user:{
         type:mongoose.Schema.Types.ObjectId,
         ref:"User"
+    },
+    qr_code_link:{
+        type:String,
+        required:false,
     }
 });
 
