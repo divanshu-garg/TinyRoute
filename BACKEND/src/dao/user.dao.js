@@ -1,3 +1,4 @@
+import shortUrl from "../models/shortUrl.model.js";
 import User from "../models/user.model.js"
 
 const findUserByEmail = async (email) => {
@@ -14,4 +15,8 @@ const createUser = async (name, email, password) => {
   return newUser;
 };
 
-export { findUserByEmail, findUserById, createUser };
+const getAllUserUrlsFromDb = async (_id)=>{
+  return await shortUrl.find({user:_id})
+}
+
+export { findUserByEmail, findUserById, createUser, getAllUserUrlsFromDb };

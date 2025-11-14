@@ -13,7 +13,7 @@ const createShortUrl = asyncHandler( async (req, res) => {
     if(slug && req.user){
         const slugExists = await checkSlugExists(slug);
         if(!slugExists) shortUrl = slug;
-        else return res.status(400).json({message:"this url already exists"})
+        else return res.status(400).json({message:"this custom url already exists"})
     }else{
         shortUrl = await generateNanoId(7);
     }

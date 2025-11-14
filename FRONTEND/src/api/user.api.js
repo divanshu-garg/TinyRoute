@@ -16,4 +16,9 @@ const getCurrentUser = async ()=>{
     return data;
 }
 
-export {loginUser, registerUser, getCurrentUser };
+const getAllUserUrls = async () =>{
+    const {data} = await axiosInstance.post("/api/user/urls")
+    return data;
+}
+
+export {loginUser, registerUser, getCurrentUser, getAllUserUrls };

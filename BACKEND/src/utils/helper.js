@@ -5,7 +5,7 @@ export const generateNanoId = (length) => nanoid(length);
 
 export const signToken = (payload) => {
     // get only userid in payload
-  return jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: "15m" });
+  return jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: "1h" });
 };
 
 export const verifyToken = (token) => {

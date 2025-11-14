@@ -8,7 +8,7 @@ import store from "./store/store.js";
 import { Provider } from "react-redux";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
-const queryClient = new QueryClient();
+export const queryClient = new QueryClient();
 const router = createRouter({
   routeTree,
   context: {

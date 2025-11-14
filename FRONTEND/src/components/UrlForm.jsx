@@ -1,18 +1,40 @@
 import { useState } from "react";
-import { createShortUrl } from "../api/shortUrl.api.js";
+import { createCustomShortUrl, createShortUrl } from "../api/shortUrl.api.js";
+import { useSelector } from "react-redux";
+import { queryClient } from "../main.jsx";
 
 const UrlForm = () => {
-//   const [loading, setLoading] = useState(false);
   const [longUrl, setLongUrl] = useState("");
   const [shortUrl, setShortUrl] = useState("");
   const [copied, setCopied] = useState(false)
-  console.log(longUrl);
+  const [customSlug, setCustomSlug] = useState("");
+  const [error, setError] = useState(null);
+  const {isAuthenticated} = useSelector((state) => state.auth);
+  // console.log(longUrl);
+
+const ensureValidUrl =(url)=>{
+    if(!url.startsWith("https://") && !url.startsWith("http://")){
+      return "https://"+url;
+    }
+    return url;
+}
 
   const handleSubmit = async () => {
-    const data = await createShortUrl(longUrl)
-    console.log(data);
-    await setShortUrl(data.short_url);
-  };
+    const validUrl = ensureValidUrl(longUrl);
+    setLongUrl(validUrl);
+    console.log(validUrl);
+    
+    try {  
+      let data;
+      if(isAuthenticated && customSlug) data = await createCustomShortUrl(validUrl, customSlug)
+      else data = await createShortUrl(validUrl);
+      console.log("data:",data);
+      await setShortUrl(data.short_url);
+      queryClient.invalidateQueries({queryKey: ['userUrls']});
+    } catch (error) {
+      console.log("an error occured while shortening url", error);
+      setError(error.response?.data?.message || "An error occurred. Please try again.");
+    }};
 
   const handleCopy = () =>{
     navigator.clipboard.writeText(shortUrl);
@@ -42,7 +64,11 @@ const UrlForm = () => {
             required
           />
         </div>
-
+        {error && (
+          <div className="p-3 bg-red-100 border border-red-400 text-red-700 rounded-lg text-sm">
+            {error}
+          </div>
+        )}
         <button
           type="submit"
           onClick={handleSubmit}
@@ -59,6 +85,25 @@ const UrlForm = () => {
             {error}
           </div>
         )} */}
+
+      {isAuthenticated && (
+        <div className="mt-4">
+          <label
+            htmlFor="customSlug"
+            className="block text-sm font-medium text-gray-700 mb-2"
+          >
+            Custom Slug (optional)
+          </label>
+          <input
+            type="text"
+            id="customSlug"
+            value={customSlug}
+            onChange={(e) => setCustomSlug(() => e.target.value)}
+            placeholder="your-custom-slug"
+            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition"
+          />
+        </div>
+      )}
 
       {shortUrl && (
         <div className="mt-6 p-4 bg-green-50 border border-green-200 rounded-lg">

@@ -4,6 +4,7 @@ import connectDB from "./src/config/mongo.config.js";
 import shortUrlRouter from "./src/routes/shortUrl.route.js";
 // import router from "./src/routes/auth.route.js";
 import authRouter from "./src/routes/auth.routes.js"
+import userRouter from "./src/routes/user.routes.js"
 import {redirectFromShortUrl} from "./src/controllers/shortUrl.controller.js"
 import { errorHandler } from "./src/utils/errorHandler.js";
 import cors from "cors";
@@ -23,7 +24,7 @@ app.use(cookieParser())
 app.use(attachUserMiddleware)
 app.use("/api/auth", authRouter)
 app.use("/api/create",shortUrlRouter)
-
+app.use("/api/user", userRouter)
 app.get("/:id",redirectFromShortUrl)
 app.use(errorHandler)
 
