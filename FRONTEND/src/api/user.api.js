@@ -11,4 +11,9 @@ const registerUser = async(name, email, password) =>{
     return data;
 }
 
-export {loginUser, registerUser };
+const getCurrentUser = async ()=>{
+    const {data} = await axiosInstance.get("/api/auth/me")
+    return data;
+}
+
+export {loginUser, registerUser, getCurrentUser };

@@ -31,4 +31,8 @@ const loginUser = asyncHandler(async (req, res) => {
   res.status(200).json({ user:userObj, message: "login successful" });
 });
 
-export { registerUser, loginUser };
+const getCurrentUser = asyncHandler((req, res) => {
+    res.status(200).json({ user: req.user });
+});
+
+export { registerUser, loginUser, getCurrentUser };
