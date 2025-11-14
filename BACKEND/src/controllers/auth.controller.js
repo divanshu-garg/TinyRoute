@@ -31,8 +31,17 @@ const loginUser = asyncHandler(async (req, res) => {
   res.status(200).json({ user:userObj, message: "login successful" });
 });
 
+const logoutUser = asyncHandler(async (req,res)=>{
+  const token = req.cookies.accessToken;
+  if(!token) return res.status(200).json({message:"user is already logged out"})
+
+  res.clearCookie("accessToken", cookieOptions);
+  req.user= null;
+  return res.json({ message: "Logged out" });
+})
+
 const getCurrentUser = asyncHandler((req, res) => {
     res.status(200).json({ user: req.user });
 });
 
-export { registerUser, loginUser, getCurrentUser };
+export { registerUser, loginUser, getCurrentUser, logoutUser };

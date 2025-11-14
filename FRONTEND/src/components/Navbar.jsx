@@ -1,10 +1,26 @@
-import React from 'react';
-import { Link } from '@tanstack/react-router';
-import { useSelector } from 'react-redux';
+import {useState} from 'react';
+import { Link, redirect } from '@tanstack/react-router';
+import { useDispatch, useSelector } from 'react-redux';
+import { logoutUser } from '../api/user.api';
+import { logout } from '../store/slices/authSlice';
 
 const Navbar = () => {
-    const {isAuthenticated} = useSelector((state) => state.auth);
-    // const handleLogout = () => {}
+    const [error, setError] = useState("")
+    const {user, isAuthenticated} = useSelector((state) => state.auth);
+    const dispatch = useDispatch();
+    const handleLogout = async () => {
+        setError('')
+        try {
+            // throw new Error("logout not implemented yet")
+            const res = await logoutUser();
+            // const res = false;
+            if(res) dispatch(logout());
+            return redirect({to:"/"})
+        } catch (error) {
+            setError(error.response?.data?.message || "An error occurred. Please try again.");
+            console.log("eror occured while logging out:", error)
+        }
+    }
   return (
     <nav className="bg-[#fafafa] border-b border-gray-200 shadow-lg sticky top-0 z-50">
       <div className="mx-auto px-4 sm:px-6 lg:px-8">
@@ -23,16 +39,16 @@ const Navbar = () => {
           {/* Right side - Auth buttons */}
           <div className="flex items-center">
             {(isAuthenticated) ? (
-            //   <div className="flex items-center space-x-4">
-            //     <span className="text-gray-700">Welcome, {user.name || 'User'}</span>
-            //     <button
-            //       onClick={handleLogout}
-            //       className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-md text-sm font-medium"
-            //     >
-            //       Logout
-            //     </button>
-            //   </div>
-            null
+              <div className="flex items-center space-x-4">
+                <span className="text-gray-700">Welcome, {user.name || 'User'}</span>
+                <button
+                  onClick={handleLogout}
+                  className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-md text-sm font-medium"
+                >
+                  Logout
+                </button>
+              </div>
+            // null
             ) : (
               <Link
                 to="/auth"
@@ -43,7 +59,14 @@ const Navbar = () => {
             )}
           </div>
         </div>
+
+        {error && (
+        <div className="absolute right-0 mt-2 bg-red-100 text-red-700 border border-red-300 px-3 py-1 rounded-md text-xs shadow-sm">
+            {error}
+        </div>
+        )}
       </div>
+
     </nav>
   );
 };

@@ -11,6 +11,11 @@ const registerUser = async(name, email, password) =>{
     return data;
 }
 
+const logoutUser = async ()=>{
+    const {data} = await axiosInstance.post("/api/auth/logout")
+    return data;
+}
+
 const getCurrentUser = async ()=>{
     const {data} = await axiosInstance.get("/api/auth/me")
     return data;
@@ -21,4 +26,4 @@ const getAllUserUrls = async () =>{
     return data;
 }
 
-export {loginUser, registerUser, getCurrentUser, getAllUserUrls };
+export {loginUser, registerUser, getCurrentUser, logoutUser, getAllUserUrls };

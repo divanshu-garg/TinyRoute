@@ -20,6 +20,7 @@ const ensureValidUrl =(url)=>{
 }
 
   const handleSubmit = async () => {
+    setError('');
     const validUrl = ensureValidUrl(longUrl);
     setLongUrl(validUrl);
     console.log(validUrl);
