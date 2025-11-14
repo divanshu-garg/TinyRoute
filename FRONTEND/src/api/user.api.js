@@ -22,8 +22,13 @@ const getCurrentUser = async ()=>{
 }
 
 const getAllUserUrls = async () =>{
-    const {data} = await axiosInstance.post("/api/user/urls")
+    const {data} = await axiosInstance.get("/api/user/urls")
     return data;
 }
 
-export {loginUser, registerUser, getCurrentUser, logoutUser, getAllUserUrls };
+const deleteUserUrl = async (url_id, user_id) =>{
+    const {data} = await axiosInstance.delete(`/api/user/urls/${url_id}`, {data:{user_id}})
+    return data;
+}
+
+export {loginUser, registerUser, getCurrentUser, logoutUser, getAllUserUrls, deleteUserUrl };

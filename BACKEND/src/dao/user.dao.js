@@ -19,4 +19,8 @@ const getAllUserUrlsFromDb = async (_id)=>{
   return await shortUrl.find({user:_id})
 }
 
-export { findUserByEmail, findUserById, createUser, getAllUserUrlsFromDb };
+const deleteUrlFromUserDb = async (url_id, user_id)=>{
+  return await shortUrl.findOneAndDelete({_id:url_id, user:user_id},);
+}
+
+export { findUserByEmail, findUserById, createUser, getAllUserUrlsFromDb, deleteUrlFromUserDb };
