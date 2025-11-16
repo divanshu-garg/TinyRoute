@@ -1,23 +1,18 @@
 import React, { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { deleteUserUrl, getAllUserUrls } from "../api/user.api";
+import { generateQr } from "../api/qr.api.js";
 import { useSelector } from "react-redux";
 import { queryClient } from "../main";
+import QrPopup from "./QrPopup.jsx";
 
 const UserUrls = () => {
-  const {user} = useSelector((state)=>state.auth);
-  const handleDelete = async (url) =>{
-    // Implement delete functionality here
-try {
-    const deleted = await deleteUserUrl(url._id, user._id);
-    if(deleted){
-      console.log("url deleted successfully", deleted)
-      queryClient.invalidateQueries(['userUrls'])
-    }
-} catch (error) {
-    console.log("an error occured while deleting url", error)
-}
-  }
+  const { user } = useSelector((state) => state.auth);
+  const [qrLoading, setQrLoading] = useState(false);
+  const [qrError, setQrError] = useState(null);
+  const [qrUrl, setQrUrl] = useState("")
+  const [showQr, setShowQr] = useState(false)
+  const [shortUrl, setShortUrl] = useState("")
   const {
     data: urls,
     isLoading,
@@ -29,6 +24,43 @@ try {
     refetchInterval: 30000, // Refetch every 30 seconds to update click counts
     staleTime: 0, // Consider data stale immediately so it refetches when invalidated
   });
+
+  const handleShowQr = (qr_url, short_url) => { 
+    setShowQr(true); 
+    setQrUrl(qr_url);
+    setShortUrl(short_url);
+  };
+  const handleGenerateQr = async (shortUrl) => {
+    setQrError("");
+    setQrLoading(true);
+    try {
+      const generatedQr = await generateQr(shortUrl);
+      if (generatedQr?.qr_code_link) {
+        queryClient.invalidateQueries({ queryKey: ["userUrls"] });
+        // return setQrUrl(generatedQr.qr_code_link);
+      }
+    } catch (error) {
+      console.log("an error occured while generating qr", error);
+      setQrError(
+        error.response?.data?.message || "An error occurred. Please try again."
+      );
+    } finally {
+      setQrLoading(false);
+    }
+  };
+
+  const handleDelete = async (url) => {
+    // Implement delete functionality here
+    try {
+      const deleted = await deleteUserUrl(url._id, user._id);
+      if (deleted) {
+        console.log("url deleted successfully", deleted);
+        queryClient.invalidateQueries(["userUrls"]);
+      }
+    } catch (error) {
+      console.log("an error occured while deleting url", error);
+    }
+  };
   const [copiedId, setCopiedId] = useState(null);
   const handleCopy = (url, id) => {
     navigator.clipboard.writeText(url);
@@ -81,31 +113,32 @@ try {
 
   return (
     <div className="bg-white rounded-lg mt-5 shadow-md overflow-hidden">
+      {showQr && <QrPopup showQr={showQr} shortUrl={`${import.meta.env.VITE_BACKEND_URI}/${shortUrl}`} setShowQr={setShowQr} qrUrl={qrUrl} />}
       <div className="overflow-x-auto h-56">
         <table className="min-w-full divide-y divide-gray-200">
           <thead className="bg-gray-50">
             <tr>
               <th
                 scope="col"
-                className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
               >
                 Original URL
               </th>
               <th
                 scope="col"
-                className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
               >
                 Short URL
               </th>
               <th
                 scope="col"
-                className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
               >
                 Clicks
               </th>
               <th
                 scope="col"
-                className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
               >
                 Actions
               </th>
@@ -138,7 +171,7 @@ try {
                     </span>
                   </div>
                 </td>
-                <td className="px-6 py-4 text-sm font-medium">
+                <td className="px-0 py-4 text-sm font-medium">
                   <button
                     onClick={() =>
                       handleCopy(
@@ -190,16 +223,17 @@ try {
                       </>
                     )}
                   </button>
-                  <button className="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md shadow-sm px-2 ml-5 bg-red-100 text-red-700 hover:bg-red-200"
-                  onClick={()=>handleDelete(url)}
+                  <button
+                    className="inline-flex items-center px-3 py-1.5 border border-transparent text-xl font-medium rounded-md shadow-sm ml-5 bg-red-100 text-red-700 hover:bg-red-200"
+                    onClick={() => handleDelete(url)}
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       fill="none"
                       viewBox="0 0 24 24"
-                      strokeWidth={1.5}
+                      strokeWidth={2.5}
                       stroke="currentColor"
-                      className="w-5 h-5 text-red-600"
+                      className="w-5 h-4 text-red-600"
                     >
                       <path
                         strokeLinecap="round"
@@ -208,6 +242,29 @@ try {
                       />
                     </svg>
                   </button>
+                  {url.qr_code_link ? (
+                    <button
+                      type="submit"
+                      onClick={() => handleShowQr(url.qr_code_link, url.short_url)}
+                      className="px-4 py-1.5 m-3 bg-green-600 hover:bg-green-700 disabled:bg-green-400 disabled:cursor-not-allowed cursor-pointer text-white font-regular rounded-lg shadow-md"
+                    >
+                      Show QR
+                    </button>
+                  ) : (
+                    <button
+                      type="submit"
+                      disabled={qrLoading}
+                      onClick={() => handleGenerateQr(url.short_url)}
+                      className="px-4 py-1.5 m-3 bg-red-600 hover:bg-red-700 disabled:bg-red-400 disabled:cursor-not-allowed cursor-pointer text-white font-regular rounded-lg shadow-md"
+                    >
+                      {qrLoading ? "Generating QR..." : "Generate QR"}
+                    </button>
+                  )}
+                  {qrError && (
+                    <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded my-4">
+                      Error loading your URLs: {qrError}
+                    </div>
+                  )}
                 </td>
               </tr>
             ))}
