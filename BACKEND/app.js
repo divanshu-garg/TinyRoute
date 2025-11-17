@@ -14,6 +14,7 @@ import { attachUserMiddleware } from "./src/middleware/auth.middleware.js";
 configDotenv()
 
 const app = express();
+app.set("trust proxy", true)
 app.use(cors({
     origin: process.env.FRONTEND_URL,
     credentials: true 

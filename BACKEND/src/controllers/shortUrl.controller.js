@@ -2,6 +2,7 @@ import { generateNanoId } from "../utils/helper.js";
 import { checkSlugExists, saveShortUrl } from "../dao/shortUrl.js";
 import { getShortUrl } from "../dao/shortUrl.js";
 import {asyncHandler} from "../utils/tryCatchWrapper.js";
+import { saveClickData } from "../utils/clickData.js";
 
 const createShortUrl = asyncHandler( async (req, res) => {
     const { longUrl, slug } = req.body;
@@ -23,12 +24,14 @@ const createShortUrl = asyncHandler( async (req, res) => {
     res.status(201).json({short_url:process.env.APP_URL + shortUrl});
 });
 
+// TODO: test geoip after deployment
 const redirectFromShortUrl = asyncHandler(async (req,res)=>{
     const {id} = req.params;
     console.log("id:", id);
-    
     const shortUrl = await getShortUrl(id);
     if(shortUrl){
+        // console.log("short_url", shortUrl);
+        await saveClickData(req, shortUrl);
         res.redirect(shortUrl.full_url)
     }else{
         res.status(404).json({message:"url not found"})
