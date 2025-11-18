@@ -1,13 +1,15 @@
 import {useState} from 'react';
-import { Link, redirect } from '@tanstack/react-router';
+import { Link, redirect, useNavigate } from '@tanstack/react-router';
 import { useDispatch, useSelector } from 'react-redux';
 import { logoutUser } from '../api/user.api';
 import { logout } from '../store/slices/authSlice';
+import { queryClient } from '../main';
 
 const Navbar = () => {
     const [error, setError] = useState("")
     const {user, isAuthenticated} = useSelector((state) => state.auth);
     const dispatch = useDispatch();
+    const navigate = useNavigate();
     const handleLogout = async () => {
         setError('')
         try {
@@ -15,7 +17,9 @@ const Navbar = () => {
             const res = await logoutUser();
             // const res = false;
             if(res) dispatch(logout());
-            return redirect({to:"/"})
+            // Invalidate currentUser query that was main in checkAuth for dashboard route to clear cached user data
+            await queryClient.removeQueries({ queryKey: ['currentUser'] });
+            return navigate({to:"/auth"})
         } catch (error) {
             setError(error.response?.data?.message || "An error occurred. Please try again.");
             console.log("eror occured while logging out:", error)

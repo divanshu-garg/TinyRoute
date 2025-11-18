@@ -59,6 +59,7 @@ function RegisterForm({setShowLoginComponent}) {
             type="text"
             id="name"
             name="name"
+            onKeyDown={(e) => e.key === "Enter" && handleSubmit()}
             value={formData.name}
             onChange={handleChange}
             placeholder="Enter your full name"
@@ -77,6 +78,7 @@ function RegisterForm({setShowLoginComponent}) {
             name="email"
             value={formData.email}
             onChange={handleChange}
+            onKeyDown={(e) => e.key === "Enter" && handleSubmit()}
             placeholder="Enter your email"
             className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition"
             required
@@ -91,6 +93,7 @@ function RegisterForm({setShowLoginComponent}) {
             type="password"
             id="password"
             name="password"
+            onKeyDown={(e) => e.key === "Enter" && handleSubmit()}
             value={formData.password}
             onChange={handleChange}
             placeholder="Create a password"

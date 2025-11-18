@@ -59,6 +59,7 @@ function LoginForm({setShowLoginComponent}) {
             type="email"
             id="email"
             name="email"
+            onKeyDown={(e) => e.key === "Enter" && handleSubmit()}
             value={formData.email}
             onChange={handleChange}
             placeholder="Enter your email"
@@ -75,6 +76,7 @@ function LoginForm({setShowLoginComponent}) {
             type="password"
             id="password"
             name="password"
+            onKeyDown={(e) => e.key === "Enter" && handleSubmit()}
             value={formData.password}
             onChange={handleChange}
             placeholder="Enter your password"
