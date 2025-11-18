@@ -15,11 +15,13 @@ export const saveClickData = async (req, shortUrl) => {
   // USER will come from my vercel or ONRENDER, which is a proxy. proxy attaches actual user ip on x-forwarded-for type headers
   const ip =
     req.headers["x-forwarded-for"]?.split(",")[0] || req.socket.remoteAddress;
+  // const ip = "8.8.8.8";
   const parsedIp = geoip.lookup(ip);
   const referer = req.headers.referer;
   const country = getCountryFromCode(parsedIp?.country);
 
   const click = new Click();
+  // console.log("url id:", shortUrl._id)
   click.short_url_id = shortUrl._id;
   click.browser = browser || "unknown";
   click.device_type = deviceType || "unknown";

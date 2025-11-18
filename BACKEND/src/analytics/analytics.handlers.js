@@ -1,43 +1,43 @@
 import Click from "../models/clicks.model.js";
 import shortUrl from "../models/shortUrl.model.js";
 
-export const getTotalClicks = async (userId) => {
-  const urls = await shortUrl.find({ user: userId });
+export const getTotalClicks = async (filter) => {
+  const urls = await shortUrl.find({ ...filter });
   let count = 0;
   urls.map((url) => (count += url.clicks));
   return count;
 };
 
-export const getTotalUrls = async (userId) => {
-  const totalUrls = await shortUrl.countDocuments({ user: userId });
+export const getTotalUrls = async (filter) => {
+  const totalUrls = await shortUrl.countDocuments({ ...filter });
   return totalUrls;
 };
 
-export const getClicksToday = async (userId) => {
+export const getClicksToday = async (filter) => {
   const today = new Date();
   today.setHours(0, 0, 0, 0);
   const count = await Click.countDocuments({
-    user: userId,
+    ...filter,
     timestamp: { $gte: today },
   });
   return count;
 };
 
-export const getClicksThisWeek = async (userId) => {
+export const getClicksThisWeek = async (filter) => {
   const lastWeek = new Date();
   lastWeek.setDate(lastWeek.getDate() - 7);
   const count = await Click.countDocuments({
-    user: userId,
+    ...filter,
     timestamp: { $gte: lastWeek },
   });
   return count;
 };
 
-export const getUniqueVisitors = async (userId) => {
+export const getUniqueVisitors = async (filter) => {
   const unique = await Click.aggregate([
     {
       $match: {
-        user: userId,
+        ...filter,
       },
     },
     {
@@ -47,22 +47,23 @@ export const getUniqueVisitors = async (userId) => {
       $count: "totalCount",
     },
   ]);
+  console.log("unique:", unique)
   return unique[0]?.totalCount || 0;
 };
 
-export const getClicksChartByDays = async (userId, days) => {
+export const getClicksChartByDays = async (filter, days) => {
   const startingDate = new Date();
   startingDate.setDate(startingDate.getDate() - days);
-
   // clicks by user in last given days
   const clicks = await Click.aggregate([
-    { $match: { user: userId, timestamp: { $gte: startingDate } } },
+    { $match: { ...filter, timestamp: { $gte: startingDate } } },
     {
       $set: {
         day: {
           $dateToString: {
             format: "%Y-%m-%d",
             date: "$timestamp",
+            timezone: "Asia/Kolkata",
           },
         },
       },
@@ -75,11 +76,11 @@ export const getClicksChartByDays = async (userId, days) => {
   return clicks;
 };
 
-export const getClicksByDeviceType = async (userId) => {
+export const getClicksByDeviceType = async (filter) => {
   const clicksByDevice = await Click.aggregate([
     {
       $match: {
-        user: userId,
+        ...filter,
       },
     },
     {
@@ -89,15 +90,16 @@ export const getClicksByDeviceType = async (userId) => {
       },
     },
   ]);
-
+  console.log("device data:", clicksByDevice);
+  
   return clicksByDevice;
 };
 
-export const getClicksByBrowser = async (userId) => {
+export const getClicksByBrowser = async (filter) => {
   const clicksByBrowser = await Click.aggregate([
     {
       $match: {
-        user: userId,
+        ...filter,
       },
     },
     {
@@ -114,11 +116,11 @@ export const getClicksByBrowser = async (userId) => {
   return clicksByBrowser;
 };
 
-export const getTopCountriesByClicks = async (userId, limit = 6) => {
+export const getTopCountriesByClicks = async (filter, limit = 6) => {
   const clicksByCountry = await Click.aggregate([
     {
       $match: {
-        user: userId,
+        ...filter,
       },
     },
     {
@@ -138,11 +140,11 @@ export const getTopCountriesByClicks = async (userId, limit = 6) => {
   return clicksByCountry;
 };
 
-export const getClicksByReferrers = async (userId, limit=6)=>{
+export const getClicksByReferrers = async (filter, limit=6)=>{
     const clicksByReferrers = await Click.aggregate([
         {
           $match: {
-            user: userId,
+            ...filter,
           },
         },
         {

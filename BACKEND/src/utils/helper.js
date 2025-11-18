@@ -43,12 +43,15 @@ export const getCountryFromCode = (countryCode) => {
 };
 
 // for analytics click time series chart
-export const handleZeroClickDays = (arr) => {
+export const handleZeroClickDays = (arr, days) => {
+  console.log("arr:", arr)
   const result = [];
-  result.push(arr[0]);
-  for (let i = 1; i < arr.length; i++) {
+  let prevDate = new Date();
+  prevDate.setDate(prevDate.getDate() - days);
+  // result.push(arr[0]);
+  for (let i = 0; i < arr.length; i++) {
     let currDate = new Date(arr[i]._id);
-    let prevDate = new Date(arr[i - 1]._id);
+    if(i!==0) prevDate = new Date(arr[i - 1]._id);
     const daysDiff = (currDate - prevDate) / (1000 * 60 * 60 * 24);
 
     if (daysDiff === 1) {
@@ -70,11 +73,10 @@ export const handleZeroClickDays = (arr) => {
 };
 
 export const handleZeroDeviceClicks = (arr)=>{
-  // if(arr.length === 4) return arr;
   let result = []
   const requiredOptions = {'desktop':true, 'mobile':true, 'tablet':true, 'unknown':true}
   const currOptions = {};
-  arr.forEach(elem => currOptions[elem._id] = elem.count)
+  arr.forEach(elem => currOptions[elem._id] = elem.clicks)
 
   for(const option in requiredOptions){
     if(currOptions[option] >0){
@@ -84,5 +86,6 @@ export const handleZeroDeviceClicks = (arr)=>{
     }
   }
 
+  // console.log("result", result)
   return result;
 }
