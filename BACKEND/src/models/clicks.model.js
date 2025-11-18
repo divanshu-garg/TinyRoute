@@ -3,8 +3,14 @@ import mongoose from "mongoose";
 const clickSchema = new mongoose.Schema({
     short_url_id:{
         type:mongoose.Schema.Types.ObjectId,
-        ref:"ShortUrl",
+        ref:"shortUrl",
         required:true,
+        index:true,
+    },
+    user:{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:"User",
+        default:null,
         index:true,
     },
     timestamp:{
@@ -40,7 +46,7 @@ const clickSchema = new mongoose.Schema({
     },
     referrer:{
         type:String, 
-        default: "unknown"
+        default: "direct"
     },
     browser:{
         type:String,

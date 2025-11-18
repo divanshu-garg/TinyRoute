@@ -1,14 +1,16 @@
 import { UAParser } from "ua-parser-js";
 import geoip from "geoip-lite";
 import Click from "../models/clicks.model.js";
-import { getCountryFromCode, getDeviceType } from "./helper.js";
+import { getCountryFromCode, getDeviceType, handleBrowserName } from "./helper.js";
 
 //TODO: HASH IP ADDRESS BEFORE STORING
 export const saveClickData = async (req, shortUrl) => {
+  // const user = req.user;
+
   const userAgent = req.headers["user-agent"];
   const parsedUserAgent = UAParser(userAgent);
   const deviceType = getDeviceType(parsedUserAgent.device.type);
-  const browser = parsedUserAgent.browser.name || "unknown";
+  const browser = handleBrowserName(parsedUserAgent.browser.name) || "unknown";
 
   // USER will come from my vercel or ONRENDER, which is a proxy. proxy attaches actual user ip on x-forwarded-for type headers
   const ip =
@@ -25,7 +27,8 @@ export const saveClickData = async (req, shortUrl) => {
   click.city = parsedIp?.city || "unknown";
   click.region = parsedIp?.region || "unknown";
   click.country = country;
-  click.referrer = referer || "unknown";
+  click.referrer = referer || "direct";
   click.ip_address = ip || "unknown";
+  click.user = shortUrl.user || null;
   await click.save();
 };
