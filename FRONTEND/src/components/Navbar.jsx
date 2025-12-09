@@ -35,10 +35,17 @@ const Navbar = () => {
               TinyRoute
             </Link>
           </div>
+          <div className="flex space-x-4 items-center">
           <div className="flex items-center">
             <Link to="/dashboard" className="text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-blue-50 px-4 py-2 rounded-lg border border-transparent hover:border-blue-200 transition-all">
               Dashboard
             </Link>
+          </div>
+          <div className="flex items-center">
+            <Link to="/analytics" className="text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-blue-50 px-4 py-2 rounded-lg border border-transparent hover:border-blue-200 transition-all">
+              Analytics
+            </Link>
+          </div>
           </div>
           {/* Right side - Auth buttons */}
           <div className="flex items-center">

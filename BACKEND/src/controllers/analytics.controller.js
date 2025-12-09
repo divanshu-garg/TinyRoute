@@ -36,7 +36,8 @@ export const getAnalyticsData = asyncHandler(async (req, res) => {
 
     res.status(200).json({
         success:true,
-        data:{message:"Analytics Data Fetched Successfully",data:{
+        message:"Analytics Data Fetched Successfully",
+        data:{
             totalClicks,
             totalUrls,
             totalUniqueVisitors,
@@ -49,7 +50,7 @@ export const getAnalyticsData = asyncHandler(async (req, res) => {
             clicksChartData7Days,
             clicksChartData30Days,
             clicksChartData90Days,
-        }}});
+        }});
 })
 
 export const getAnalyticsDataByUrl = asyncHandler(async (req, res) => {
@@ -92,7 +93,8 @@ export const getAnalyticsDataByUrl = asyncHandler(async (req, res) => {
 
     res.status(200).json({
         success:true,
-        data:{message:"Analytics Data Fetched Successfully",data:{
+        message:"Analytics Data Fetched Successfully",
+        data:{
             totalClicks,
             totalUniqueVisitors,
             totalClicksToday,
@@ -104,5 +106,5 @@ export const getAnalyticsDataByUrl = asyncHandler(async (req, res) => {
             clicksChartData7Days,
             clicksChartData30Days,
             clicksChartData90Days,
-        }}});
+        }});
 })
