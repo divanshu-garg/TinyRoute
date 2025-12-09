@@ -1,0 +1,37 @@
+import { useParams } from '@tanstack/react-router';
+import React from 'react';
+
+const LinkErrorPage = () => {
+   const { reason } = useParams({ from: "/error/$reason" });
+    let icon, title, message;
+
+  if (reason === 'expired') {
+    icon = '⏰';
+    title = 'Link Expired';
+    message = 'This shortened link has expired and is no longer available.';
+  } else if (reason === 'max_clicks') {
+    icon = '🚫';
+    title = 'Link Limit Reached';
+    message = 'This link has reached its maximum number of clicks.';
+  } else if (reason === 'not_found') {
+    icon = '❓';
+    title = 'Link Not Found';
+    message = 'The shortened link you requested does not exist.';
+  } else {
+    icon = '⚠️';
+    title = 'Something Went Wrong';
+    message = 'An error occurred while processing your request.';
+  }
+
+  return (
+    <div className="min-h-screen bg-gray-50 flex items-center justify-center p-6">
+      <div className="max-w-md w-full bg-white rounded-lg shadow border border-gray-200 p-8 text-center">
+        <div className="text-6xl mb-4">{icon}</div>
+        <h1 className="text-2xl font-bold text-gray-900 mb-2">{title}</h1>
+        <p className="text-gray-600">{message}</p>
+      </div>
+    </div>
+  );
+};
+
+export default LinkErrorPage;

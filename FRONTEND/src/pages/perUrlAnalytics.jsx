@@ -4,7 +4,7 @@ import AnalyticsCards from "../components/AnalyticsCards";
 import DeviceChart from "../components/DeviceChart";
 import BarChartAnalytics from "../components/BarChartAnalytics";
 import LineChartClicks from "../components/LineChartClicks";
-import { useLocation, useParams } from "@tanstack/react-router";
+import { redirect, useLocation, useParams } from "@tanstack/react-router";
 
 const perUrlAnalytics = () => {
 
@@ -62,7 +62,7 @@ console.log("long url:", longUrl)
               <label className="text-sm font-medium text-gray-500">
                 Short URL
               </label>
-              <p className="text-lg font-semibold text-blue-600 break-all">
+              <p onClick={()=> window.open(shortUrl, '_blank')} className="text-lg cursor-pointer font-semibold text-blue-600 break-all">
                 {shortUrl}
               </p>
             </div>

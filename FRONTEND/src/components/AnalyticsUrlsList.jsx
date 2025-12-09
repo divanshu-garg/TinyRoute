@@ -5,7 +5,6 @@ import { useState } from "react";
 import { getAllUserUrls } from "../api/user.api";
 
 const AnalyticsUrlsList = () => {
-  const [shortUrl, setShortUrl] = useState("");
   const navigate = useNavigate();
   const {
     data: urls,

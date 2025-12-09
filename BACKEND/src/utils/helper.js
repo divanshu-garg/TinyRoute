@@ -14,6 +14,32 @@ export const verifyToken = (token) => {
   return jwt.verify(token, process.env.JWT_SECRET);
 };
 
+export const handleDateExpiry = async (shortUrl) => {
+    if (shortUrl.expiresAt && new Date() > shortUrl.expiresAt) {
+    if (shortUrl.isActive) {
+      shortUrl.isActive = false;
+      shortUrl.deactivatedAt = new Date();
+      shortUrl.deactivationReason = 'expired';
+      await shortUrl.save();
+    }
+    return true;
+  }
+  return false;
+}
+
+export const handleClicksExpiry = async (shortUrl) => {
+  if (shortUrl.maxClicks && shortUrl.clicks >= shortUrl.maxClicks) {
+    if (shortUrl.isActive) {
+      shortUrl.isActive = false;
+      shortUrl.deactivatedAt = new Date();
+      shortUrl.deactivationReason = 'max_clicks_reached';
+      await shortUrl.save();
+    }
+    return true;
+  }
+  return false;
+}
+
 export const handleBrowserName = (browser) => {
     if(!browser) return "Other"
     const name = browser.toLowerCase();
