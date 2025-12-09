@@ -287,15 +287,17 @@ const UserUrls = () => {
                   <button
                     className="inline-flex items-center px-3 py-1.5 border border-transparent text-xl font-medium rounded-md shadow-sm ml-5 bg-white-800 hover:bg-white-900 text-white-100
                     text-green-500 cursor-pointer"
-                    onClick={() => {
-                      console.log("url id:", url._id)
+                    onClick={() =>
                       navigate({
                         to: "/analytics/$urlId",
                         params: {
                         urlId: url._id,
                       },
+                        state: {
+                        longUrl: url.full_url,
+                        shortUrl: `http://localhost:3000/${url.short_url}`,
+                      }
                       })
-                    }
                     }
                   >
                     🔎

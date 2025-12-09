@@ -4,13 +4,17 @@ import AnalyticsCards from "../components/AnalyticsCards";
 import DeviceChart from "../components/DeviceChart";
 import BarChartAnalytics from "../components/BarChartAnalytics";
 import LineChartClicks from "../components/LineChartClicks";
-import { useParams } from "@tanstack/react-router";
+import { useLocation, useParams } from "@tanstack/react-router";
 
 const perUrlAnalytics = () => {
 
 const { urlId } = useParams({ from: "/analytics/$urlId" });
 // console.log("short url:", urlId);
 
+const location = useLocation();
+const longUrl = location.state?.longUrl;
+const shortUrl = location.state?.shortUrl;
+console.log("long url:", longUrl)
 
   const { data, isLoading, isError, error } = useQuery({
     queryKey: ["analyticsData", urlId],
@@ -50,6 +54,25 @@ const { urlId } = useParams({ from: "/analytics/$urlId" });
             Analytics Dashboard
           </h1>
           <p className="text-gray-600 mt-1">Track your link performance</p>
+        </div>
+
+        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
+          <div className="space-y-3">
+            <div>
+              <label className="text-sm font-medium text-gray-500">
+                Short URL
+              </label>
+              <p className="text-lg font-semibold text-blue-600 break-all">
+                {shortUrl}
+              </p>
+            </div>
+            <div>
+              <label className="text-sm font-medium text-gray-500">
+                Original URL
+              </label>
+              <p className="text-gray-700 break-all">{longUrl}</p>
+            </div>
+          </div>
         </div>
 
         <AnalyticsCards showTotalUrls={false} metrics={metrics} />

@@ -16,7 +16,7 @@ const OverallAnalytics = () => {
 
   if (isLoading) return <div>Loading analytics...</div>;
   if (isError) return <div>Failed to load analytics: {error.message}</div>;
-  console.log("Analytics data:", data);
+  // console.log("Analytics data:", data);
 
   const metrics = data.data;
   let browsers = ["Chrome", "Safari", "Firefox", "Edge", "Opera", "Other"];
