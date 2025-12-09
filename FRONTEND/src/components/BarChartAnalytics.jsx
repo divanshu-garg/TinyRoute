@@ -13,7 +13,7 @@ const BarChartAnalytics = ({ data }) => {
   console.log("browsers data:", data);
   data = data.map((item) => ({
     name: item._id,
-    amt: item.clicks,
+    clicks: item.clicks,
   }));
 
   const COLORS = ["#FFBB28", "#00C49F", "#0088FE", "#FF8042", "#8884d8", "#82ca9d"];
@@ -50,7 +50,7 @@ const BarChartAnalytics = ({ data }) => {
           <YAxis width="auto" />
           <Tooltip />
           <Bar
-            dataKey="amt"
+            dataKey="clicks"
             barSize={80}
             fill="#FFBB28"
             activeBar={<Rectangle fill="#0088FE" stroke="purple" />}

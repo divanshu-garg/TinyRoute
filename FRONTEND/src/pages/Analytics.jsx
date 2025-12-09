@@ -3,6 +3,7 @@ import { getOverallAnalytics } from "../api/analytics.api";
 import AnalyticsCards from "../components/AnalyticsCards";
 import DeviceChart from "../components/DeviceChart";
 import BarChartAnalytics from "../components/BarChartAnalytics";
+import LineChartClicks from "../components/LineChartClicks";
 
 const Analytics = () => {
   const { data, isLoading, isError, error } = useQuery({
@@ -35,38 +36,72 @@ const Analytics = () => {
   );
 
   return (
-  <div className="min-h-screen bg-gray-50 p-6">
-    <div className="max-w-7xl mx-auto space-y-6">
-      
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900">Analytics Dashboard</h1>
-        <p className="text-gray-600 mt-1">Track your link performance</p>
-      </div>
-
-      <AnalyticsCards metrics={metrics} />
-
-      {/* grid 2 col */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mx-10">
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow">
-          <h2 className="text-lg font-semibold text-gray-800 mb-4">Device breakdown</h2>
-          <DeviceChart data={metrics.clicksByDeviceType} />
+    <div className="min-h-screen bg-gray-50 p-6">
+      <div className="max-w-7xl mx-auto space-y-6">
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold text-gray-900">
+            Analytics Dashboard
+          </h1>
+          <p className="text-gray-600 mt-1">Track your link performance</p>
         </div>
 
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow">
-          <h2 className="text-lg font-semibold text-gray-800 pb-15 mb-4">Browser breakdown</h2>
-          <BarChartAnalytics data={browsersData} />
-        </div>
-      </div>
+        <AnalyticsCards metrics={metrics} />
 
-      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow">
-        <h2 className="text-lg text-center font-semibold block text-gray-800 mb-4">Top countries by clicks</h2>
-        <div className="flex justify-center">
-        <BarChartAnalytics data={countriesData} />
+        {/* grid 2 col */}
+        <div className="grid grid-cols-1 mt-20 lg:grid-cols-2 gap-6 mx-10">
+          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow">
+            <h2 className="text-lg font-semibold text-gray-800 mb-4">
+              Device breakdown
+            </h2>
+            <DeviceChart data={metrics.clicksByDeviceType} />
+          </div>
+
+          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow">
+            <h2 className="text-lg font-semibold text-gray-800 pb-15 mb-4">
+              Browser breakdown
+            </h2>
+            <BarChartAnalytics data={browsersData} />
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 mt-10 lg:grid-cols-2 gap-6 mx-10">
+          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow">
+            <h2 className="text-lg font-semibold text-gray-800 mb-15">
+              Top countries by clicks
+            </h2>
+            {/* <div className="flex justify-center"> */}
+            <BarChartAnalytics data={countriesData} />
+            {/* </div> */}
+          </div>
+
+          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow">
+            <h2 className="text-lg font-semibold text-gray-800 pb-15 mb-4">
+              Last 7 days clicks chart
+            </h2>
+            <LineChartClicks data={metrics.clicksChartData7Days} />
+          </div>
+        </div>
+
+        <div className="bg-white rounded-xl mt-25 mx-10 px-15 shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow">
+          <h2 className="text-lg font-semibold block text-gray-800 mb-4">
+            Last 30 days clicks chart
+          </h2>
+          <div className="flex p-5 justify-center">
+            <LineChartClicks data={metrics.clicksChartData30Days} />
+          </div>
+        </div>
+
+        <div className="bg-white rounded-xl mt-15 mx-10 px-15 shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow">
+          <h2 className="text-lg font-semibold block text-gray-800 mb-4">
+            Last 90 days clicks chart
+          </h2>
+          <div className="flex p-5 justify-center">
+            <LineChartClicks data={metrics.clicksChartData90Days} />
+          </div>
         </div>
       </div>
     </div>
-  </div>
-);
+  );
 };
 
 export default Analytics;
