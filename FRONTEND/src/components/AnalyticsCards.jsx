@@ -1,5 +1,5 @@
 
-const AnalyticsCards = ({metrics}) => {
+const AnalyticsCards = ({metrics, showTotalUrls}) => {
   return (
     <div>
     <div className="flex justify-center py-5">
@@ -18,14 +18,14 @@ const AnalyticsCards = ({metrics}) => {
           </p>
         </div>
 
-        <div className="w-full sm:w-1/2 lg:w-1/3 max-w-xs rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
+        {showTotalUrls? <div className="w-full sm:w-1/2 lg:w-1/3 max-w-xs rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
           <p className="text-xs font-medium text-slate-500 uppercase tracking-wide">
             Total URLs
           </p>
           <p className="mt-2 text-2xl font-semibold text-slate-900">
             {metrics.totalUrls}
           </p>
-        </div>
+        </div> : null}
 
         <div className="w-full sm:w-1/2 lg:w-1/3 max-w-xs rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
           <p className="text-xs font-medium text-slate-500 uppercase tracking-wide">
@@ -34,7 +34,7 @@ const AnalyticsCards = ({metrics}) => {
           <p className="mt-2 text-2xl font-semibold text-slate-900">
             {metrics.totalUniqueVisitors}
           </p>
-        </div>
+        </div> 
 
         <div className="w-full sm:w-1/2 lg:w-1/3 max-w-xs rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
           <p className="text-xs font-medium text-slate-500 uppercase tracking-wide">

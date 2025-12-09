@@ -3,7 +3,7 @@ import App from "../App";
 import { homePageRoute } from "./homePage.route.js";
 import { authRoute } from "./auth.route.js";
 import { dashboardRoute } from "./dashboard.route.js";
-import { analyticsRoute } from "./analytics.route.js";
+import { analyticsRoute, urlAnalyticsRoute } from "./analytics.route.js";
 
 export const rootRoute = createRootRoute({
   component: App,
@@ -14,4 +14,5 @@ export const routeTree = rootRoute.addChildren([
   authRoute,
   dashboardRoute,
   analyticsRoute,
+  urlAnalyticsRoute,
 ]);

@@ -5,14 +5,16 @@ import { generateQr } from "../api/qr.api.js";
 import { useSelector } from "react-redux";
 import { queryClient } from "../main";
 import QrPopup from "./QrPopup.jsx";
+import { useNavigate } from "@tanstack/react-router";
 
 const UserUrls = () => {
   const { user } = useSelector((state) => state.auth);
   const [qrLoading, setQrLoading] = useState(false);
   const [qrError, setQrError] = useState(null);
-  const [qrUrl, setQrUrl] = useState("")
-  const [showQr, setShowQr] = useState(false)
-  const [shortUrl, setShortUrl] = useState("")
+  const [qrUrl, setQrUrl] = useState("");
+  const [showQr, setShowQr] = useState(false);
+  const [shortUrl, setShortUrl] = useState("");
+  const navigate = useNavigate();
   const {
     data: urls,
     isLoading,
@@ -25,8 +27,8 @@ const UserUrls = () => {
     staleTime: 0, // Consider data stale immediately so it refetches when invalidated
   });
 
-  const handleShowQr = (qr_url, short_url) => { 
-    setShowQr(true); 
+  const handleShowQr = (qr_url, short_url) => {
+    setShowQr(true);
     setQrUrl(qr_url);
     setShortUrl(short_url);
   };
@@ -113,7 +115,14 @@ const UserUrls = () => {
 
   return (
     <div className="bg-white rounded-lg mt-5 shadow-md overflow-hidden">
-      {showQr && <QrPopup showQr={showQr} shortUrl={`${import.meta.env.VITE_BACKEND_URI}/${shortUrl}`} setShowQr={setShowQr} qrUrl={qrUrl} />}
+      {showQr && (
+        <QrPopup
+          showQr={showQr}
+          shortUrl={`${import.meta.env.VITE_BACKEND_URI}/${shortUrl}`}
+          setShowQr={setShowQr}
+          qrUrl={qrUrl}
+        />
+      )}
       <div className="overflow-x-auto h-56">
         <table className="min-w-full divide-y divide-gray-200">
           <thead className="bg-gray-50">
@@ -138,9 +147,15 @@ const UserUrls = () => {
               </th>
               <th
                 scope="col"
-                className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                className="px-3 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider"
               >
                 Actions
+              </th>
+              <th
+                scope="col"
+                className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+              >
+                Analytics
               </th>
             </tr>
           </thead>
@@ -179,7 +194,7 @@ const UserUrls = () => {
                         url._id
                       )
                     }
-                    className={`inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md shadow-sm ${
+                    className={`inline-flex cursor-pointer items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md shadow-sm ${
                       copiedId === url._id
                         ? "bg-green-600 text-white hover:bg-green-700"
                         : "bg-blue-600 text-white hover:bg-blue-700"
@@ -224,7 +239,7 @@ const UserUrls = () => {
                     )}
                   </button>
                   <button
-                    className="inline-flex items-center px-3 py-1.5 border border-transparent text-xl font-medium rounded-md shadow-sm ml-5 bg-red-100 text-red-700 hover:bg-red-200"
+                    className="inline-flex cursor-pointer items-center px-3 py-1.5 border border-transparent text-xl font-medium rounded-md shadow-sm ml-5 bg-red-100 text-red-700 hover:bg-red-200"
                     onClick={() => handleDelete(url)}
                   >
                     <svg
@@ -245,7 +260,9 @@ const UserUrls = () => {
                   {url.qr_code_link ? (
                     <button
                       type="submit"
-                      onClick={() => handleShowQr(url.qr_code_link, url.short_url)}
+                      onClick={() =>
+                        handleShowQr(url.qr_code_link, url.short_url)
+                      }
                       className="px-4 py-1.5 m-3 bg-green-600 hover:bg-green-700 disabled:bg-green-400 disabled:cursor-not-allowed cursor-pointer text-white font-regular rounded-lg shadow-md"
                     >
                       Show QR
@@ -265,6 +282,24 @@ const UserUrls = () => {
                       Error loading your URLs: {qrError}
                     </div>
                   )}
+                </td>
+                <td className="px-0 py-4 text-sm font-medium">
+                  <button
+                    className="inline-flex items-center px-3 py-1.5 border border-transparent text-xl font-medium rounded-md shadow-sm ml-5 bg-white-800 hover:bg-white-900 text-white-100
+                    text-green-500 cursor-pointer"
+                    onClick={() => {
+                      console.log("url id:", url._id)
+                      navigate({
+                        to: "/analytics/$urlId",
+                        params: {
+                        urlId: url._id,
+                      },
+                      })
+                    }
+                    }
+                  >
+                    🔎
+                  </button>
                 </td>
               </tr>
             ))}

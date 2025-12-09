@@ -6,9 +6,8 @@ const getOverallAnalytics = async () =>{
     return data;
 }
 
-const getUrlAnalytics = async (shortUrl) =>{
-    console.log("fetching overall analytics");
-    const {data} = await axiosInstance.get(`/api/analytics/${shortUrl}` )
+const getUrlAnalytics = async (urlId) =>{
+    const {data} = await axiosInstance.get(`/api/analytics/${urlId}` )
     return data;
 }
 

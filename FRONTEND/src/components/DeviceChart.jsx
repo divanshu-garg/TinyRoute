@@ -7,7 +7,7 @@ const DeviceChart = ({ data }) => {
   }));
 
   const COLORS = ["#FFBB28", "#00C49F", "#0088FE", "#FF8042"];
-  console.log("data:", data);
+//   console.log("data:", data);
 
   return (
     <PieChart

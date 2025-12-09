@@ -10,7 +10,7 @@ import {
 } from "recharts";
 
 const BarChartAnalytics = ({ data }) => {
-  console.log("browsers data:", data);
+  // console.log("browsers data:", data);
   data = data.map((item) => ({
     name: item._id,
     clicks: item.clicks,

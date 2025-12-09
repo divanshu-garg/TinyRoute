@@ -1,14 +1,21 @@
 import { useQuery } from "@tanstack/react-query";
-import { getOverallAnalytics } from "../api/analytics.api";
+import { getUrlAnalytics } from "../api/analytics.api";
 import AnalyticsCards from "../components/AnalyticsCards";
 import DeviceChart from "../components/DeviceChart";
 import BarChartAnalytics from "../components/BarChartAnalytics";
 import LineChartClicks from "../components/LineChartClicks";
+import { useParams } from "@tanstack/react-router";
 
-const Analytics = () => {
+const perUrlAnalytics = () => {
+
+const { urlId } = useParams({ from: "/analytics/$urlId" });
+// console.log("short url:", urlId);
+
+
   const { data, isLoading, isError, error } = useQuery({
-    queryKey: ["analyticsData"],
-    queryFn: getOverallAnalytics,
+    queryKey: ["analyticsData", urlId],
+    queryFn: () => getUrlAnalytics(urlId),
+    enabled: !!urlId,
     refetchInterval: 1000 * 30,
     staleTime: 0,
   });
@@ -45,7 +52,7 @@ const Analytics = () => {
           <p className="text-gray-600 mt-1">Track your link performance</p>
         </div>
 
-        <AnalyticsCards metrics={metrics} />
+        <AnalyticsCards showTotalUrls={false} metrics={metrics} />
 
         {/* grid 2 col */}
         <div className="grid grid-cols-1 mt-20 lg:grid-cols-2 gap-6 mx-10">
@@ -104,4 +111,4 @@ const Analytics = () => {
   );
 };
 
-export default Analytics;
+export default perUrlAnalytics;
