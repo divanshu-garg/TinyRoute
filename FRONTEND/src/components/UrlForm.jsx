@@ -14,6 +14,8 @@ const UrlForm = () => {
   const [loading, setLoading] = useState(false);
   const [qrUrl, setQrUrl] = useState("");
   const [showQr, setShowQr] = useState(false)
+  const [maxClicks, setMaxClicks] = useState(null)
+  const [expiresAt, setExpiresAt] = useState(null)
   const { isAuthenticated } = useSelector((state) => state.auth);
   // console.log(longUrl);
 
@@ -36,8 +38,8 @@ const UrlForm = () => {
     try {
       let data;
       if (isAuthenticated && customSlug)
-        data = await createCustomShortUrl(validUrl, customSlug);
-      else data = await createShortUrl(validUrl);
+        data = await createCustomShortUrl(validUrl, customSlug, maxClicks, expiresAt);
+      else data = await createShortUrl(validUrl, maxClicks, expiresAt);
       console.log("data:", data);
       await setShortUrl(data.short_url);
       queryClient.invalidateQueries({ queryKey: ["userUrls"] });
@@ -84,8 +86,15 @@ const UrlForm = () => {
   }
 
   return (
-    <div>
-    {showQr && <QrPopup showQr={showQr} setShowQr={setShowQr} qrUrl={qrUrl} shortUrl={shortUrl} />}
+    <div className="mb-25">
+      {showQr && (
+        <QrPopup
+          showQr={showQr}
+          setShowQr={setShowQr}
+          qrUrl={qrUrl}
+          shortUrl={shortUrl}
+        />
+      )}
       <div className="space-y-4">
         <div>
           <label
@@ -118,6 +127,39 @@ const UrlForm = () => {
           {loading ? "Shortening..." : "Shorten URL"}
         </button>
       </div>
+      {/* expiry feature: */}
+      {isAuthenticated && <div className="space-y-4 mt-4 p-4 bg-gray-50 rounded-lg">
+        <h3 className="block text-sm font-medium mb-[3vh] text-gray-700 mb-2">
+          Advanced Options (Optional)
+        </h3>
+
+        <div>
+          <label 
+          className="block text-sm font-medium text-gray-700 mb-2"
+          >
+            Expiry Date
+          </label>
+          <input
+            type="datetime-local"
+            id="expiryDate"
+            value={expiresAt || ''}
+            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition"
+            onChange={(e) => setExpiresAt(e.target.value)}
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">Max Clicks</label>
+          <input
+            type="number"
+            id="maxClicks"
+            value={maxClicks || ''}
+            placeholder="Leave empty for unlimited"
+            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition"
+            onChange={(e) => setMaxClicks(e.target.value)}
+          />
+        </div>
+      </div>}
 
       {isAuthenticated && (
         <div className="mt-4">

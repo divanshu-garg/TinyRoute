@@ -5,7 +5,7 @@ import {asyncHandler} from "../utils/tryCatchWrapper.js";
 import { saveClickData } from "../utils/clickData.js";
 
 const createShortUrl = asyncHandler( async (req, res) => {
-    const { longUrl, slug } = req.body;
+    const { longUrl, slug, maxClicks, expiresAt } = req.body;
     console.log(longUrl);
     if(!longUrl){
         return res.status(400).json({message:"url is required"})
@@ -20,7 +20,7 @@ const createShortUrl = asyncHandler( async (req, res) => {
     }
     
     //if user logged in save user id as well
-    await saveShortUrl(shortUrl, longUrl, req.user?._id);
+    await saveShortUrl(shortUrl, longUrl, maxClicks, expiresAt, req.user?._id);
     res.status(201).json({short_url:process.env.APP_URL + shortUrl});
 });
 
@@ -32,16 +32,16 @@ const redirectFromShortUrl = asyncHandler(async (req,res)=>{
     if(shortUrl){
         // console.log("short_url", shortUrl);
         const dateExpired = await handleDateExpiry(shortUrl);
-        if(dateExpired) return res.redirect(`${process.env.FRONTEND_URL}/error?reason=expired`);
+        if(dateExpired) return res.redirect(`${process.env.FRONTEND_URL}/error/expired`);
         
         const clicksExpired = await handleClicksExpiry(shortUrl);
-        if(clicksExpired) return res.redirect(`${process.env.FRONTEND_URL}/error?reason=max_clicks`);
+        if(clicksExpired) return res.redirect(`${process.env.FRONTEND_URL}/error/max_clicks`);
         await saveClickData(req, shortUrl);
 
         res.redirect(shortUrl.full_url)
     }else{
         // res.status(404).json({message:"url not found"})
-        return res.redirect(`${process.env.FRONTEND_URL}/error?reason=not_found`);
+        return res.redirect(`${process.env.FRONTEND_URL}/error/not_found`);
     }
 })
 

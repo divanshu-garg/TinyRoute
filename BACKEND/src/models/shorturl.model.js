@@ -33,8 +33,10 @@ const shortUrlSchema = new mongoose.Schema({
         default: null 
   },
     isActive: { 
-        type: Boolean, default: true },
-        deactivationReason: {
+        type: Boolean, 
+        default: true 
+      },
+    deactivationReason: {
         type: String,
         enum: ["expired", "max_clicks_reached", "manual"],
         default: null,
