@@ -51,6 +51,17 @@ const UserUrls = () => {
     }
   };
 
+  const handleDeactivationReason = (reason, url) => {
+    switch(reason){
+      case "expired":
+        return "URL Expired";
+      case "max_clicks_reached":
+        return `Limit Reached(${url.maxClicks})`;
+      default:
+        "disabled manually";
+    }
+  }
+
   const handleDelete = async (url) => {
     // Implement delete functionality here
     try {
@@ -123,21 +134,27 @@ const UserUrls = () => {
           qrUrl={qrUrl}
         />
       )}
-      <div className="overflow-x-auto h-56">
+      <div className="overflow-x-auto h-84">
         <table className="min-w-full divide-y divide-gray-200">
           <thead className="bg-gray-50">
             <tr>
               <th
                 scope="col"
-                className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                className="px-5 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
               >
                 Original URL
               </th>
               <th
                 scope="col"
-                className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                className="px-5 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
               >
                 Short URL
+              </th>
+              <th
+                scope="col"
+                className="px-5 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+              >
+                Status
               </th>
               <th
                 scope="col"
@@ -147,9 +164,15 @@ const UserUrls = () => {
               </th>
               <th
                 scope="col"
-                className="px-3 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider"
+                className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
               >
                 Actions
+              </th>
+              <th
+                scope="col"
+                className="px-3 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider"
+              >
+                QR
               </th>
               <th
                 scope="col"
@@ -180,13 +203,20 @@ const UserUrls = () => {
                   </div>
                 </td>
                 <td className="px-6 py-4">
+                  <div className="text-xs text-gray-900">
+                    <span className="text-left inline-flex text-xs leading-5 font-semibold">
+                      {!url.isActive ? handleDeactivationReason(url.deactivationReason, url) : "Active"}
+                    </span>
+                  </div>
+                </td>
+                <td className="px-2 mx-2  py-4 justify-start text-left">
                   <div className="text-sm text-gray-900">
                     <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">
                       {url.clicks} {url.clicks === 1 ? "click" : "clicks"}
                     </span>
                   </div>
                 </td>
-                <td className="px-0 py-4 text-sm font-medium">
+                <td className="px-2 py-4 text-sm text-left font-medium">
                   <button
                     onClick={() =>
                       handleCopy(
@@ -194,52 +224,32 @@ const UserUrls = () => {
                         url._id
                       )
                     }
-                    className={`inline-flex cursor-pointer items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md shadow-sm ${
+                    className={`inline-flex items-center mx-2 text-lg font-semibold px-2 py-1 rounded-md border transition shadow-sm
+                    ${
                       copiedId === url._id
-                        ? "bg-green-600 text-white hover:bg-green-700"
-                        : "bg-blue-600 text-white hover:bg-blue-700"
-                    } focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200`}
+                        ? "bg-green-600 text-white border-green-700 shadow hover:bg-green-700"
+                        : "bg-black text-white border-gray-300 hover:bg-gray-700"
+                    }`}
                   >
-                    {copiedId === url._id ? (
-                      <>
-                        <svg
-                          className="w-4 h-4 mr-1"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                          xmlns="http://www.w3.org/2000/svg"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth="2"
-                            d="M5 13l4 4L19 7"
-                          ></path>
-                        </svg>
-                        Copied!
-                      </>
-                    ) : (
-                      <>
-                        <svg
-                          className="w-4 h-4 mr-1"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                          xmlns="http://www.w3.org/2000/svg"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth="2"
-                            d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"
-                          ></path>
-                        </svg>
-                        Copy URL
-                      </>
-                    )}
+                    <span className={``}>
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        strokeWidth={2}
+                        stroke="currentColor"
+                        className="w-5 h-5"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M8 7h8m-8 4h8m-8 4h6m2 5H6a2 2 0 01-2-2V5a2 2 0 012-2h4l2 2h6a2 2 0 012 2v12a2 2 0 01-2 2z"
+                        />
+                      </svg>
+                    </span>
                   </button>
                   <button
-                    className="inline-flex cursor-pointer items-center px-3 py-1.5 border border-transparent text-xl font-medium rounded-md shadow-sm ml-5 bg-red-100 text-red-700 hover:bg-red-200"
+                    className="inline-flex cursor-pointer items-center px-3 py-1.5 border border-transparent text-xl font-medium rounded-md shadow-sm mx-2 bg-red-100 text-red-700 hover:bg-red-200"
                     onClick={() => handleDelete(url)}
                   >
                     <svg
@@ -257,24 +267,44 @@ const UserUrls = () => {
                       />
                     </svg>
                   </button>
+                </td>
+                <td className="px-2 mx-2  py-4 justify-center text-center">
                   {url.qr_code_link ? (
                     <button
                       type="submit"
                       onClick={() =>
                         handleShowQr(url.qr_code_link, url.short_url)
                       }
-                      className="px-4 py-1.5 m-3 bg-green-600 hover:bg-green-700 disabled:bg-green-400 disabled:cursor-not-allowed cursor-pointer text-white font-regular rounded-lg shadow-md"
+                      className="px-3 py-2 m-3 bg-green-600 text-lg hover:bg-green-700 disabled:bg-green-400 disabled:cursor-not-allowed cursor-pointer text-white font-regular rounded-lg shadow-md"
                     >
-                      Show QR
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        strokeWidth={2}
+                        stroke="currentColor"
+                        className="w-5 h-5"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M2.25 12s3.75-7.5 9.75-7.5S21.75 12 21.75 12s-3.75 7.5-9.75 7.5S2.25 12 2.25 12z"
+                        />
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M12 15.75a3.75 3.75 0 100-7.5 3.75 3.75 0 000 7.5z"
+                        />
+                    </svg>
                     </button>
                   ) : (
                     <button
                       type="submit"
                       disabled={qrLoading}
                       onClick={() => handleGenerateQr(url.short_url)}
-                      className="px-4 py-1.5 m-3 bg-red-600 hover:bg-red-700 disabled:bg-red-400 disabled:cursor-not-allowed cursor-pointer text-white font-regular rounded-lg shadow-md"
+                      className={`px-4 py-1.5 m-3 hover:bg-red-700 bg-red-500 disabled:bg-red-400 disabled:cursor-not-allowed cursor-pointer text-white font-regular rounded-lg shadow-md`}
                     >
-                      {qrLoading ? "Generating QR..." : "Generate QR"}
+                      ⊕
                     </button>
                   )}
                   {qrError && (

@@ -95,6 +95,11 @@ const AnalyticsUrlsList = () => {
                       {url.clicks} clicks
                     </span>
                   )}
+                  {!url.isActive && (
+                    <span className="text-xs bg-red-500 text-white px-2 py-1 rounded-full">
+                      inactive
+                    </span>
+                  )}
                 </div>
                 <p className="text-sm text-gray-600 truncate">
                   {url.originalUrl || url.longUrl}
