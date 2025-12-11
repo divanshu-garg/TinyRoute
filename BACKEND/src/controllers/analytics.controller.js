@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { getClicksByBrowser, getClicksByDeviceType, getClicksByReferrers, getClicksChartByDays, getClicksThisWeek, getClicksToday, getTopCountriesByClicks, getTotalClicks, getTotalUrls, getUniqueVisitors } from "../analytics/analytics.handlers.js";
+import { getClicksByBrowser, getClicksByDeviceType, getClicksByReferrers, getClicksChartByDays, getClicksThisWeek, getClicksToday, getTopCountriesByClicks, getTotalClicks, getTotalInActiveUrls, getTotalUrls, getUniqueVisitors } from "../analytics/analytics.handlers.js";
 import shortUrl from "../models/shortUrl.model.js";
 import { handleZeroClickDays, handleZeroDeviceClicks } from "../utils/helper.js";
 import { asyncHandler } from "../utils/tryCatchWrapper.js";
@@ -27,6 +27,8 @@ export const getAnalyticsData = asyncHandler(async (req, res) => {
     const totalUniqueVisitors = await getUniqueVisitors({user:userId});
     const totalClicksToday = await getClicksToday({user:userId});
     const totalClicksThisWeek = await getClicksThisWeek({user:userId})
+    const totalInActiveUrls = await getTotalInActiveUrls({user:userId, isActive:false})
+    const totalActiveUrls = totalUrls - totalInActiveUrls;
     
     // F5: referrer breakdown
     const totalClicksByReferrers = await getClicksByReferrers({user:userId}, 6);
@@ -40,6 +42,8 @@ export const getAnalyticsData = asyncHandler(async (req, res) => {
         data:{
             totalClicks,
             totalUrls,
+            totalInActiveUrls,
+            totalActiveUrls,
             totalUniqueVisitors,
             totalClicksToday,
             totalClicksThisWeek,

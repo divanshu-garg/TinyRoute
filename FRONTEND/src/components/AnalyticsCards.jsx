@@ -3,7 +3,7 @@ const AnalyticsCards = ({metrics, showTotalUrls}) => {
   return (
     <div>
     <div className="flex justify-center py-5">
-          <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4 text-center">
+          <h1 className="text-xl sm:text-2xl font-bold text-blue-800 mb-2 text-center">
             Overall Analytics
           </h1>
         </div>
@@ -24,6 +24,24 @@ const AnalyticsCards = ({metrics, showTotalUrls}) => {
           </p>
           <p className="mt-2 text-2xl font-semibold text-slate-900">
             {metrics.totalUrls}
+          </p>
+        </div> : null}
+
+                {showTotalUrls? <div className="w-full sm:w-1/2 lg:w-1/3 max-w-xs rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
+          <p className="text-xs font-medium text-slate-500 uppercase tracking-wide">
+            Total Active URLs
+          </p>
+          <p className="mt-2 text-2xl font-semibold text-slate-900">
+            {metrics.totalActiveUrls}
+          </p>
+        </div> : null}
+
+                {showTotalUrls? <div className="w-full sm:w-1/2 lg:w-1/3 max-w-xs rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
+          <p className="text-xs font-medium text-slate-500 uppercase tracking-wide">
+            Total Inactive URLs
+          </p>
+          <p className="mt-2 text-2xl font-semibold text-slate-900">
+            {metrics.totalInActiveUrls}
           </p>
         </div> : null}
 

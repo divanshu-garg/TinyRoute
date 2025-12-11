@@ -40,10 +40,10 @@ const OverallAnalytics = () => {
     <div className="min-h-screen bg-gray-50 p-6">
       <div className="max-w-7xl mx-auto space-y-6">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">
+          <h1 className="text-4xl text-center font-bold mt-6 text-gray-900">
             Analytics Dashboard
           </h1>
-          <p className="text-gray-600 mt-1">Track your link performance</p>
+          <p className="text-gray-600 text-lg text-center mt-2">Track your link performance</p>
         </div>
 
         <AnalyticsCards showTotalUrls={true} metrics={metrics} />

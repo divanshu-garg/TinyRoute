@@ -51,6 +51,10 @@ export const getUniqueVisitors = async (filter) => {
   return unique[0]?.totalCount || 0;
 };
 
+export const getTotalInActiveUrls = async (filter) =>{
+  return (await shortUrl.find(filter)).length
+}
+
 export const getClicksChartByDays = async (filter, days) => {
   const startingDate = new Date();
   startingDate.setDate(startingDate.getDate() - days);
