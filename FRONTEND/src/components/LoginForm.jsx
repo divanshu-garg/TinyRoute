@@ -44,8 +44,8 @@ function LoginForm({setShowLoginComponent}) {
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-lg p-6 border border-gray-100">
-      <div className="text-center mb-6">
+    <div className="bg-white rounded-lg shadow-lg p-4 sm:p-6 border border-gray-100 max-w-lg w-full mx-auto">
+      <div className="text-center mb-4">
         <h2 className="text-2xl font-bold text-gray-800 mb-2">Welcome Back</h2>
         <p className="text-gray-600">Sign in to your account</p>
       </div>
@@ -63,7 +63,7 @@ function LoginForm({setShowLoginComponent}) {
             value={formData.email}
             onChange={handleChange}
             placeholder="Enter your email"
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition"
+            className="w-full min-w-0 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none text-sm transition"
             required
           />
         </div>
@@ -80,13 +80,13 @@ function LoginForm({setShowLoginComponent}) {
             value={formData.password}
             onChange={handleChange}
             placeholder="Enter your password"
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition"
+            className="w-full min-w-0 px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition"
             required
           />
         </div>
 
         {error && (
-          <div className="p-3 bg-red-100 border border-red-400 text-red-700 rounded-lg text-sm">
+          <div className="p-2 bg-red-50 border border-red-200 text-red-700 rounded text-sm">
             {error}
           </div>
         )}
@@ -95,13 +95,13 @@ function LoginForm({setShowLoginComponent}) {
           type="submit"
           disabled={loading}
           onClick={handleSubmit}
-          className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white font-semibold py-3 px-4 rounded-lg transition duration-200"
+          className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white font-semibold py-3 rounded-lg transition duration-200"
         >
           {loading ? 'Signing In...' : 'Sign In'}
         </button>
       </div>
 
-      <div className="mt-6 text-center">
+      <div className="mt-4 text-center">
         <p className="text-gray-600">
           Don't have an account?{' '}
           <span onClick={()=> setShowLoginComponent(false)} className="text-blue-600 cursor-pointer hover:text-blue-700 font-medium">

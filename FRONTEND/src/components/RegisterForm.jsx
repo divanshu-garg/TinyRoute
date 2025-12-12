@@ -44,13 +44,13 @@ function RegisterForm({setShowLoginComponent}) {
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-lg p-6 border border-gray-100">
-      <div className="text-center mb-6">
-        <h2 className="text-2xl font-bold text-gray-800 mb-2">Create Account</h2>
-        <p className="text-gray-600">Join us to start shortening URLs</p>
+    <div className="bg-white rounded-lg shadow-sm p-4 sm:p-6 border border-gray-100 max-w-lg w-full mx-auto">
+      <div className="text-center mb-4">
+        <h2 className="text-lg sm:text-2xl font-bold text-gray-800 mb-2">Create Account</h2>
+        <p className="text-gray-600 text-sm">Join us to start shortening URLs</p>
       </div>
 
-      <div className="space-y-5">
+      <div className="space-y-4">
         <div>
           <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
             Full Name
@@ -63,7 +63,7 @@ function RegisterForm({setShowLoginComponent}) {
             value={formData.name}
             onChange={handleChange}
             placeholder="Enter your full name"
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition"
+            className="w-full min-w-0 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition text-sm"
             required
           />
         </div>
@@ -80,7 +80,7 @@ function RegisterForm({setShowLoginComponent}) {
             onChange={handleChange}
             onKeyDown={(e) => e.key === "Enter" && handleSubmit()}
             placeholder="Enter your email"
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition"
+            className="w-full min-w-0 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition text-sm"
             required
           />
         </div>
@@ -103,7 +103,7 @@ function RegisterForm({setShowLoginComponent}) {
         </div>
 
         {error && (
-          <div className="p-3 bg-red-100 border border-red-400 text-red-700 rounded-lg text-sm">
+          <div className="p-2 bg-red-50 border border-red-200 text-red-700 rounded text-sm">
             {error}
           </div>
         )}
@@ -112,13 +112,13 @@ function RegisterForm({setShowLoginComponent}) {
           type="submit"
           disabled={loading}
           onClick={handleSubmit}
-          className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white font-semibold py-3 px-4 rounded-lg transition duration-200"
+          className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white font-semibold py-3 rounded-lg transition duration-200 text-center"
         >
           {loading ? 'Creating Account...' : 'Create Account'}
         </button>
       </div>
 
-      <div className="mt-6 text-center">
+      <div className="mt-4 text-sm text-center">
         <p className="text-gray-600">
           Already have an account?{' '}
           <span onClick={()=> setShowLoginComponent(true)}  className="text-blue-600 hover:text-blue-700 cursor-pointer font-medium">

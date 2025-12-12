@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { deleteUserUrl, getAllUserUrls } from "../api/user.api";
 import { generateQr } from "../api/qr.api.js";
@@ -134,7 +134,8 @@ const UserUrls = () => {
           qrUrl={qrUrl}
         />
       )}
-      <div className="overflow-x-auto h-84">
+      {/* <div className="overflow-x-auto h-84"> */}
+      <div className="hidden sm:block overflow-x-auto">
         <table className="min-w-full divide-y divide-gray-200">
           <thead className="bg-gray-50">
             <tr>
@@ -205,7 +206,9 @@ const UserUrls = () => {
                 <td className="px-6 py-4">
                   <div className="text-xs text-gray-900">
                     <span className="text-left inline-flex text-xs leading-5 font-semibold">
-                      {!url.isActive ? handleDeactivationReason(url.deactivationReason, url) : "Active"}
+                      {!url.isActive
+                        ? handleDeactivationReason(url.deactivationReason, url)
+                        : "Active"}
                     </span>
                   </div>
                 </td>
@@ -295,7 +298,7 @@ const UserUrls = () => {
                           strokeLinejoin="round"
                           d="M12 15.75a3.75 3.75 0 100-7.5 3.75 3.75 0 000 7.5z"
                         />
-                    </svg>
+                      </svg>
                     </button>
                   ) : (
                     <button
@@ -321,12 +324,12 @@ const UserUrls = () => {
                       navigate({
                         to: "/analytics/$urlId",
                         params: {
-                        urlId: url._id,
-                      },
+                          urlId: url._id,
+                        },
                         state: {
-                        longUrl: url.full_url,
-                        shortUrl: `http://localhost:3000/${url.short_url}`,
-                      }
+                          longUrl: url.full_url,
+                          shortUrl: `http://localhost:3000/${url.short_url}`,
+                        },
                       })
                     }
                   >
@@ -337,6 +340,147 @@ const UserUrls = () => {
             ))}
           </tbody>
         </table>
+      </div>
+
+      {/* CARDS for small screens */}
+      <div className="sm:hidden space-y-3 p-3">
+        {urls.urls
+          .slice()
+          .reverse()
+          .map((url) => (
+            <div
+              key={url._id}
+              className="border rounded-lg p-3 shadow-sm bg-white"
+            >
+              <div className="flex justify-between items-start gap-2">
+                <div className="flex-1 min-w-0">
+                  <div className="text-sm font-medium text-gray-900 truncate break-words">
+                    {url.full_url}
+                  </div>
+                  <a
+                    href={`http://localhost:3000/${url.short_url}`}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="block text-xs text-blue-600 truncate"
+                  >{`localhost:3000/${url.short_url}`}</a>
+                  <div className="mt-2 text-xs text-gray-500">
+                    Status: {url.isActive ? "Active" : "Inactive"}
+                  </div>
+                  <div className="mt-1 text-xs">
+                    <span className="inline-flex items-center px-2 py-0.5 rounded-full bg-blue-100 text-blue-800 text-xs">
+                      {url.clicks} {url.clicks === 1 ? "click" : "clicks"}
+                    </span>
+                  </div>
+                </div>
+
+                <div className="flex-shrink-0 ml-2 flex flex-col items-end">
+                  <button
+                    onClick={() =>
+                      handleCopy(
+                        `http://localhost:3000/${url.short_url}`,
+                        url._id
+                      )
+                    }
+                    className={`mb-2 px-3 py-2 text-sm rounded ${
+                      copiedId === url._id
+                        ? "bg-gray-600 text-white"
+                        : "bg-black text-white"
+                    }`}
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      strokeWidth={2}
+                      stroke="currentColor"
+                      className="w-5 h-5"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M8 7h8m-8 4h8m-8 4h6m2 5H6a2 2 0 01-2-2V5a2 2 0 012-2h4l2 2h6a2 2 0 012 2v12a2 2 0 01-2 2z"
+                      />
+                    </svg>
+                  </button>
+
+                  {url.qr_code_link ? (
+                    <button
+                      onClick={() =>
+                        handleShowQr(url.qr_code_link, url.short_url)
+                      }
+                      className="px-3 w-auto flex py-2 text-sm rounded bg-green-600 text-white"
+                    >
+                     <p className="pr-1">QR </p><svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        strokeWidth={2}
+                        stroke="currentColor"
+                        className="w-5 h-5"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M2.25 12s3.75-7.5 9.75-7.5S21.75 12 21.75 12s-3.75 7.5-9.75 7.5S2.25 12 2.25 12z"
+                        />
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M12 15.75a3.75 3.75 0 100-7.5 3.75 3.75 0 000 7.5z"
+                        />
+                      </svg>
+                    </button>
+                  ) : (
+                    <button
+                      disabled={qrLoading}
+                      onClick={() => handleGenerateQr(url.short_url)}
+                      className="px-3 py-2 text-sm rounded bg-red-500 text-white"
+                    >
+                      QR ⊕
+                    </button>
+                  )}
+                </div>
+              </div>
+
+              <div className="mt-3 flex gap-2">
+                <button
+                  onClick={() =>
+                    navigate({
+                      to: "/analytics/$urlId",
+                      params: { urlId: url._id },
+                      state: {
+                        longUrl: url.full_url,
+                        shortUrl: `http://localhost:3000/${url.short_url}`,
+                      },
+                    })
+                  }
+                  className="flex-1 px-3 py-2 text-sm rounded bg-white border"
+                >
+                  Analytics
+                </button>
+                <button
+                  onClick={() => handleDelete(url)}
+                  className="px-3 py-2 text-sm rounded bg-red-100 text-red-700"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth={2.5}
+                    stroke="currentColor"
+                    className="w-5 h-4 text-red-600"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M6 7h12M9 7V4h6v3m2 0v13a2 2 0 01-2 2H8a2 2 0 01-2-2V7h12z"
+                    />
+                  </svg>
+                </button>
+              </div>
+            </div>
+          ))}
+        ;
       </div>
     </div>
   );

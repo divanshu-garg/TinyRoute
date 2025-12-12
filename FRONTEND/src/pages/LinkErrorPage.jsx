@@ -24,10 +24,10 @@ const LinkErrorPage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center p-6">
-      <div className="max-w-md w-full bg-white rounded-lg shadow border border-gray-200 p-8 text-center">
-        <div className="text-6xl mb-4">{icon}</div>
-        <h1 className="text-2xl font-bold text-gray-900 mb-2">{title}</h1>
+    <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4 sm:p-6">
+      <div className="max-w-sm sm:max-w-md w-full bg-white rounded-lg shadow-sm border border-gray-200 p-5 sm:p-8 text-center mx-3">
+        <div className="text-4xl sm:text-6xl mb-4 inline-flex items-center justify-center w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-gray-100 text-gray-700 mx-auto">{icon}</div>
+        <h1 className="text-lg sm:text-2xl font-semibold text-gray-900 mb-1">{title}</h1>
         <p className="text-gray-600">{message}</p>
       </div>
     </div>

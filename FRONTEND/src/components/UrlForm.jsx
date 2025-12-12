@@ -13,9 +13,9 @@ const UrlForm = () => {
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
   const [qrUrl, setQrUrl] = useState("");
-  const [showQr, setShowQr] = useState(false)
-  const [maxClicks, setMaxClicks] = useState(null)
-  const [expiresAt, setExpiresAt] = useState(null)
+  const [showQr, setShowQr] = useState(false);
+  const [maxClicks, setMaxClicks] = useState(null);
+  const [expiresAt, setExpiresAt] = useState(null);
   const { isAuthenticated } = useSelector((state) => state.auth);
   // console.log(longUrl);
 
@@ -38,7 +38,12 @@ const UrlForm = () => {
     try {
       let data;
       if (isAuthenticated && customSlug)
-        data = await createCustomShortUrl(validUrl, customSlug, maxClicks, expiresAt);
+        data = await createCustomShortUrl(
+          validUrl,
+          customSlug,
+          maxClicks,
+          expiresAt
+        );
       else data = await createShortUrl(validUrl, maxClicks, expiresAt);
       console.log("data:", data);
       await setShortUrl(data.short_url);
@@ -65,7 +70,7 @@ const UrlForm = () => {
     setError("");
     setLoading(true);
     try {
-      const generatedQr = await generateQr(shortUrl.split('/').slice(-1)[0]);
+      const generatedQr = await generateQr(shortUrl.split("/").slice(-1)[0]);
       if (generatedQr?.qr_code_link) {
         queryClient.invalidateQueries({ queryKey: ["userUrls"] });
         return setQrUrl(generatedQr.qr_code_link);
@@ -83,10 +88,13 @@ const UrlForm = () => {
   const handleShowQr = () => {
     setShowQr(true);
     // <QrPopup  />
-  }
+  };
 
   return (
-    <div className="mb-25">
+    <div
+      // className="mb-25"
+      className="mb-6 max-w-[900px] w-full mx-auto px-3"
+    >
       {showQr && (
         <QrPopup
           showQr={showQr}
@@ -109,12 +117,13 @@ const UrlForm = () => {
             value={longUrl}
             onChange={(e) => setLongUrl(() => e.target.value)}
             placeholder="https://example.com"
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition"
+            // className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition"
+            className="w-full min-w-0 px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition text-sm break-words"
             required
           />
         </div>
         {error && (
-          <div className="p-3 bg-red-100 border border-red-400 text-red-700 rounded-lg text-sm">
+          <div className="p-3 bg-red-50 border border-red-200 text-red-700 rounded-lg text-sm">
             {error}
           </div>
         )}
@@ -122,44 +131,46 @@ const UrlForm = () => {
           type="submit"
           onClick={handleSubmit}
           disabled={loading}
-          className="w-full bg-blue-600 cursor-pointer hover:bg-blue-700 disabled:bg-blue-400 text-white font-semibold py-3 px-4 rounded-lg transition duration-200"
+          className="w-full text-center bg-blue-600 cursor-pointer hover:bg-blue-700 disabled:bg-blue-400 text-white font-semibold py-3 px-4 rounded-lg transition duration-200"
         >
           {loading ? "Shortening..." : "Shorten URL"}
         </button>
       </div>
       {/* expiry feature: */}
-      {isAuthenticated && <div className="space-y-4 mt-4 p-4 bg-gray-50 rounded-lg">
-        <h3 className="block text-sm font-medium mb-[3vh] text-gray-700 mb-2">
-          Advanced Options (Optional)
-        </h3>
+      {isAuthenticated && (
+        <div className="space-y-4 mt-4 p-4 bg-gray-50 rounded-lg">
+          <h3 className="text-sm font-semibold underline text-gray-700 mb-4">
+            Advanced Options (Optional)
+          </h3>
 
-        <div>
-          <label 
-          className="block text-sm font-medium text-gray-700 mb-2"
-          >
-            Expiry Date
-          </label>
-          <input
-            type="datetime-local"
-            id="expiryDate"
-            value={expiresAt || ''}
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition"
-            onChange={(e) => setExpiresAt(e.target.value)}
-          />
-        </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Expiry Date
+            </label>
+            <input
+              type="datetime-local"
+              id="expiryDate"
+              value={expiresAt || ""}
+              className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+              onChange={(e) => setExpiresAt(e.target.value)}
+            />
+          </div>
 
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">Max Clicks</label>
-          <input
-            type="number"
-            id="maxClicks"
-            value={maxClicks || ''}
-            placeholder="Leave empty for unlimited"
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition"
-            onChange={(e) => setMaxClicks(e.target.value)}
-          />
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Max Clicks
+            </label>
+            <input
+              type="number"
+              id="maxClicks"
+              value={maxClicks || ""}
+              placeholder="Leave empty for unlimited"
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 text-sm outline-none transition"
+              onChange={(e) => setMaxClicks(e.target.value)}
+            />
+          </div>
         </div>
-      </div>}
+      )}
 
       {isAuthenticated && (
         <div className="mt-4">
@@ -175,19 +186,19 @@ const UrlForm = () => {
             value={customSlug}
             onChange={(e) => setCustomSlug(() => e.target.value)}
             placeholder="your-custom-slug"
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition"
+            className="w-full min-w-0 px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 text-sm outline-none transition"
           />
         </div>
       )}
       {/* generate qr button, view qr button */}
       {isAuthenticated && shortUrl ? (
         qrUrl ? (
-          <div className="mt-6 flex justify-center">
+          <div className="mt-6 flex flex-col md:flex-row md:items-center gap-3">
             <button
               type="submit"
               disabled={loading}
               onClick={handleShowQr}
-              className="px-6 py-3 bg-green-600 hover:bg-green-700 disabled:bg-green-400 disabled:cursor-not-allowed cursor-pointer text-white font-semibold rounded-lg shadow-md"
+              className="w-full md:w-auto px-6 py-3 bg-green-600 hover:bg-green-700 disabled:bg-green-400 text-white cursor-pointer disabled:cursor-not-allowed font-semibold rounded-lg shadow-md text-center"
             >
               {loading ? "Showing QR..." : "Show QR"}
             </button>
@@ -198,30 +209,31 @@ const UrlForm = () => {
               type="submit"
               disabled={loading}
               onClick={() => handleGenerateQr(shortUrl)}
-              className="px-6 py-3 bg-red-600 hover:bg-red-700 disabled:bg-red-400 disabled:cursor-not-allowed cursor-pointer text-white font-semibold rounded-lg shadow-md"
+              className="w-full md:w-auto px-6 py-3 bg-red-600 hover:bg-red-700 disabled:bg-red-400 text-white disabled:cursor-not-allowed cursor-pointer font-semibold rounded-lg shadow-md text-center"
             >
               {loading ? "Generating QR..." : "Generate QR"}
             </button>
           </div>
         )
       ) : null}
-      {shortUrl && (
-        <div className="mt-6 p-4 bg-green-50 border border-green-200 rounded-lg">
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Your short URL:
+      {/* {shortUrl && ( */}
+      {true && (
+        <div className="mt-6 p-3 bg-green-50 border border-green-200 rounded-lg">
+          <label className="block text-center text-sm font-semibold text-gray-700 mb-2">
+            Your short URL
           </label>
-          <div className="flex items-center space-x-2">
+          <div className="flex items-center gap-2 flex-col sm:flex-row">
             <input
               type="text"
               value={shortUrl}
               readOnly
-              className="flex-1 px-3 py-2 bg-white border border-gray-300 rounded text-sm"
+              className="flex-1 min-w-0 truncate px-3 py-2 bg-white border border-gray-300 rounded text-sm"
             />
             <button
               onClick={handleCopy}
-              className={`px-4 py-2 text-sm rounded transition ${
+              className={`w-full sm:w-auto px-4 py-2 text-sm rounded transition ${
                 copied
-                  ? "bg-green-600 text-lg hover:bg-green-700 text-white"
+                  ? "bg-green-600 text-white"
                   : "bg-blue-600 hover:bg-blue-700 text-white"
               }`}
             >

@@ -38,7 +38,7 @@ const AnalyticsUrlsList = () => {
 
   if (!urls.urls || urls.urls.length === 0) {
     return (
-      <div className="text-center h-30 text-gray-500 my-6 p-4 bg-gray-50 rounded-lg border border-gray-200">
+      <div className="text-center h-30 text-gray-500 my-6 p-4 bg-gray-50  border border-gray-200">
         <svg
           className="w-12 h-12 mx-auto text-gray-400 mb-3"
           fill="none"
@@ -59,9 +59,11 @@ const AnalyticsUrlsList = () => {
     );
   }
   return (
-    <div className="space-y-3 mt-25">
-      <h2 className="text-2xl font-bold text-gray-800 mb-2">Your URLs</h2>
-      <p className="text-gray-600">
+    <div className="divide-y divide-gray-100">
+    {/* <div className="space-y-3 mt-6 max-w-3xl w-full mx-auto px-3"> */}
+
+      <h2 className="text-lg sm:text-2xl font-bold text-gray-800 mb-1">Your URLs</h2>
+      <p className="text-sm text-gray-600 max-w-prose">
         Click on any URL below to view detailed analytics and performance
         metrics
       </p>
@@ -82,36 +84,36 @@ const AnalyticsUrlsList = () => {
                 },
               })
             }
-            className="bg-white border border-gray-200 rounded-lg p-4 hover:border-blue-500 hover:shadow-md transition-all cursor-pointer"
+            className="bg-white border border-gray-200 p-3 sm:p-4 hover:border-blue-500 hover:shadow-md transition-all cursor-pointer active:scale-95 focus-within:ring-2 focus-within:ring-blue-200 cursor-pointer"
           >
-            <div className="flex items-center justify-between">
+            <div className="flex items-start justify-between gap-3">
               <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-2 mb-1">
-                  <span className="text-blue-500 font-medium truncate">
+                <div className="flex items-center gap-2 mb-1 flex-wrap">
+                  <span className="text-blue-600 font-regular truncate text-sm sm:text-base min-w-0">
                     {index + 1} {`) http://localhost:3000/${url.short_url}`}
                   </span>
                   {url.clicks !== undefined && (
-                    <span className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-full">
+                    <span className="inline-flex items-center gap-1 text-xs bg-gray-100 text-gray-600 px-2 py-0.5 rounded-full whitespace-nowrap flex-shrink-0">
                       {url.clicks} clicks
                     </span>
                   )}
                   {!url.isActive && (
-                    <span className="text-xs bg-red-500 text-white px-2 py-1 rounded-full">
+                    <span className="inline-flex items-center gap-1 text-xs bg-red-500 text-white px-2 py-0.5 rounded-full whitespace-nowrap flex-shrink-0">
                       inactive
                     </span>
                   )}
                 </div>
-                <p className="text-sm text-gray-600 truncate">
+                <p className="text-sm text-gray-600 truncate min-w-0">
                   {url.originalUrl || url.longUrl}
                 </p>
                 {url.createdAt && (
-                  <p className="text-xs text-gray-400 mt-1">
+                  <p className="text-xs text-gray-400 mt-1 hidden sm:block">
                     Created: {new Date(url.createdAt).toLocaleDateString()}
                   </p>
                 )}
               </div>
               <svg
-                className="w-5 h-5 text-gray-400 flex-shrink-0 ml-3"
+                className="w-5 h-5 text-gray-400 flex-shrink-0 ml-3 hidden sm:block"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
