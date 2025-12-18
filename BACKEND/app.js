@@ -33,9 +33,27 @@ app.use("/api/analytics", analyticsRouter)
 app.get("/:id",redirectFromShortUrl)
 app.use(errorHandler)
 
-app.listen(3000, ()=>{
-    // console.log("mongo url:", process.env.MONGO_URL);
-    connectDB();
-    console.log("server is running on port 3000");
+// app.listen(process.env.PORT, ()=>{
+//     // console.log("mongo url:", process.env.MONGO_URL);
+//     connectDB();
+//     console.log("server is running on port 3000");
     
-})
+// })
+
+const PORT = process.env.PORT || 3000;
+
+const startServer = async () => {
+  try {
+    await connectDB();
+    console.log("MongoDB connected ✔");
+
+    app.listen(PORT, () => {
+      console.log(`Server running on port ${PORT}`);
+    });
+  } catch (err) {
+    console.error("Failed to start server:", err);
+    process.exit(1);
+  }
+};
+
+startServer();
