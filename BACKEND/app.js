@@ -14,11 +14,19 @@ import cookieParser from "cookie-parser";
 import { attachUserMiddleware } from "./src/middleware/auth.middleware.js";
 configDotenv()
 
+const handleCorsOrigin = (frontendUrl)=>{
+    // if frontend url has / in end remove it to make sure no cors mismatch happens
+    if(frontendUrl.endsWith("/")){
+        return frontendUrl.slice(0, -1);
+    }
+    return frontendUrl;
+}
+
 const app = express();
 app.set("trust proxy", true)
 app.use(cors({
-    origin: process.env.FRONTEND_URL,
-    credentials: true 
+    origin: [handleCorsOrigin(process.env.FRONTEND_URL), "http://localhost:5173"],
+    credentials: true
 }));
 app.use(express.json());
 app.use(express.urlencoded({extended:true}))
