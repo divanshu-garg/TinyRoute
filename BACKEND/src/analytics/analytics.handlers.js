@@ -1,5 +1,5 @@
 import Click from "../models/clicks.model.js";
-import shortUrl from "../models/shortUrl.model.js";
+import shortUrl from "../models/shorturl.model.js";
 
 export const getTotalClicks = async (filter) => {
   const urls = await shortUrl.find({ ...filter });

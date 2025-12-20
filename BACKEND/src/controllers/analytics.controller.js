@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 import { getClicksByBrowser, getClicksByDeviceType, getClicksByReferrers, getClicksChartByDays, getClicksThisWeek, getClicksToday, getTopCountriesByClicks, getTotalClicks, getTotalInActiveUrls, getTotalUrls, getUniqueVisitors } from "../analytics/analytics.handlers.js";
-import shortUrl from "../models/shortUrl.model.js";
+import shortUrl from "../models/shorturl.model.js";
 import { handleZeroClickDays, handleZeroDeviceClicks } from "../utils/helper.js";
 import { asyncHandler } from "../utils/tryCatchWrapper.js";
 

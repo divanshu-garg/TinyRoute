@@ -1,4 +1,4 @@
-import shortUrl from "../models/shortUrl.model.js";
+import shortUrl from "../models/shorturl.model.js";
 import User from "../models/user.model.js"
 
 const findUserByEmail = async (email) => {

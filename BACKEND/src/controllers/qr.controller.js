@@ -1,4 +1,4 @@
-import shortUrl from "../models/shortUrl.model.js";
+import shortUrl from "../models/shorturl.model.js";
 import { AppError, NotFoundError } from "../utils/errorHandler.js";
 import { asyncHandler } from "../utils/tryCatchWrapper.js";
 import QRCode from "qrcode"

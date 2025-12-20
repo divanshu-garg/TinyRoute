@@ -191,8 +191,10 @@ const UrlForm = () => {
         </div>
       )}
       {/* generate qr button, view qr button */}
+      {/* {true ? ( */}
       {isAuthenticated && shortUrl ? (
         qrUrl ? (
+        // true ? (
           <div className="mt-6 flex flex-col md:flex-row md:items-center gap-3">
             <button
               type="submit"
