@@ -80,7 +80,8 @@ const AnalyticsUrlsList = () => {
                 },
                 state: {
                   longUrl: url.full_url,
-                  shortUrl: `http://localhost:3000/${url.short_url}`,
+                  // shortUrl: `http://localhost:3000/${url.short_url}`,
+                  shortUrl: `${import.meta.env.VITE_BACKEND_URI}/${url.short_url}`,
                 },
               })
             }
@@ -90,7 +91,8 @@ const AnalyticsUrlsList = () => {
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2 mb-1 flex-wrap">
                   <span className="text-blue-600 font-regular truncate text-sm sm:text-base min-w-0">
-                    {index + 1} {`) http://localhost:3000/${url.short_url}`}
+                    {/* {index + 1} {`) http://localhost:3000/${url.short_url}`} */}
+                    {index + 1} {`) ${import.meta.env.VITE_BACKEND_URI}/${url.short_url}`}
                   </span>
                   {url.clicks !== undefined && (
                     <span className="inline-flex items-center gap-1 text-xs bg-gray-100 text-gray-600 px-2 py-0.5 rounded-full whitespace-nowrap flex-shrink-0">

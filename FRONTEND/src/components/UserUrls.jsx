@@ -194,12 +194,14 @@ const UserUrls = () => {
                 <td className="px-6 py-4">
                   <div className="text-sm">
                     <a
-                      href={`http://localhost:3000/${url.short_url}`}
+                      // href={`http://localhost:3000/${url.short_url}`}
+                      href={`${import.meta.env.VITE_BACKEND_URI}/${url.short_url}`}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="text-blue-600 hover:text-blue-900 hover:underline"
                     >
-                      {`localhost:3000/${url.short_url}`}
+                      {/* {`localhost:3000/${url.short_url}`} */}
+                      {`${import.meta.env.VITE_BACKEND_URI}/${url.short_url}`}
                     </a>
                   </div>
                 </td>
@@ -223,7 +225,8 @@ const UserUrls = () => {
                   <button
                     onClick={() =>
                       handleCopy(
-                        `http://localhost:3000/${url.short_url}`,
+                        // `http://localhost:3000/${url.short_url}`,
+                        `${import.meta.env.VITE_BACKEND_URI}/${url.short_url}`,
                         url._id
                       )
                     }
@@ -328,7 +331,8 @@ const UserUrls = () => {
                         },
                         state: {
                           longUrl: url.full_url,
-                          shortUrl: `http://localhost:3000/${url.short_url}`,
+                          shortUrl: `${import.meta.env.VITE_BACKEND_URI}/${url.short_url}`,
+                          // shortUrl: `http://localhost:3000/${url.short_url}`,
                         },
                       })
                     }
@@ -358,11 +362,14 @@ const UserUrls = () => {
                     {url.full_url}
                   </div>
                   <a
-                    href={`http://localhost:3000/${url.short_url}`}
+                    // href={`http://localhost:3000/${url.short_url}`}
+                    href={`${import.meta.env.VITE_BACKEND_URI}/${url.short_url}`}
                     target="_blank"
                     rel="noreferrer"
                     className="block text-xs text-blue-600 truncate"
-                  >{`localhost:3000/${url.short_url}`}</a>
+                  // >{`localhost:3000/${url.short_url}`}</a>
+                  >{`${import.meta.env.VITE_BACKEND_URI}/${url.short_url}`}</a>
+
                   <div className="mt-2 text-xs text-gray-500">
                     Status: {url.isActive ? "Active" : "Inactive"}
                   </div>
@@ -377,7 +384,8 @@ const UserUrls = () => {
                   <button
                     onClick={() =>
                       handleCopy(
-                        `http://localhost:3000/${url.short_url}`,
+                        // `http://localhost:3000/${url.short_url}`,
+                        `${import.meta.env.VITE_BACKEND_URI}/${url.short_url}`,
                         url._id
                       )
                     }
@@ -450,7 +458,8 @@ const UserUrls = () => {
                       params: { urlId: url._id },
                       state: {
                         longUrl: url.full_url,
-                        shortUrl: `http://localhost:3000/${url.short_url}`,
+                        // shortUrl: `http://localhost:3000/${url.short_url}`,
+                        shortUrl: `${import.meta.env.VITE_BACKEND_URI}/${url.short_url}`,
                       },
                     })
                   }
