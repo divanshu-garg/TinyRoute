@@ -136,6 +136,77 @@ const UrlForm = () => {
           {loading ? "Shortening..." : "Shorten URL"}
         </button>
       </div>
+      {shortUrl && (
+      // {true && (
+        <div className="mt-6 p-3 bg-green-50 border border-green-200 rounded-lg">
+          <label className="block text-center text-sm font-semibold text-gray-700 mb-2">
+            Your short URL
+          </label>
+          <div className="flex items-center gap-2 flex-col sm:flex-row">
+            <input
+              type="text"
+              value={shortUrl}
+              readOnly
+              className="flex-1 min-w-0 truncate px-3 py-2 bg-white border border-gray-300 rounded text-sm"
+            />
+            <button
+              onClick={handleCopy}
+              className={`w-full sm:w-auto px-4 py-2 text-sm rounded transition ${
+                copied
+                  ? "bg-green-600 text-white"
+                  : "bg-blue-600 hover:bg-blue-700 text-white"
+              }`}
+            >
+              {copied ? "Copied!" : "Copy"}
+            </button>
+          </div>
+        </div>
+      )}
+      {/* generate qr button, view qr button */}
+      {isAuthenticated && shortUrl ? (
+        qrUrl ? (
+        // true ? (
+          <div className="mt-6 flex flex-col justify-center md:flex-row md:items-center gap-3">
+            <button
+              type="submit"
+              disabled={loading}
+              onClick={handleShowQr}
+              className="w-full md:w-auto px-6 py-3 bg-green-600 hover:bg-green-700 disabled:bg-green-400 text-white cursor-pointer disabled:cursor-not-allowed font-semibold rounded-lg shadow-md text-center"
+            >
+              {loading ? "Showing QR..." : "Show QR"}
+            </button>
+          </div>
+        ) : (
+          <div className="mt-6 flex justify-center">
+            <button
+              type="submit"
+              disabled={loading}
+              onClick={() => handleGenerateQr(shortUrl)}
+              className="w-full md:w-auto px-6 py-3 bg-red-600 hover:bg-red-700 disabled:bg-red-400 text-white disabled:cursor-not-allowed cursor-pointer font-semibold rounded-lg shadow-md text-center"
+            >
+              {loading ? "Generating QR..." : "Generate QR"}
+            </button>
+          </div>
+        )
+      ) : null}
+      {isAuthenticated && (
+        <div className="mt-4">
+          <label
+            htmlFor="customSlug"
+            className="block text-sm font-medium text-gray-700 mb-2"
+          >
+            Custom Slug (optional)
+          </label>
+          <input
+            type="text"
+            id="customSlug"
+            value={customSlug}
+            onChange={(e) => setCustomSlug(() => e.target.value)}
+            placeholder="your-custom-slug"
+            className="w-full min-w-0 px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 text-sm outline-none transition"
+          />
+        </div>
+      )}
       {/* expiry feature: */}
       {isAuthenticated && (
         <div className="space-y-4 mt-4 p-4 bg-gray-50 rounded-lg">
@@ -168,79 +239,6 @@ const UrlForm = () => {
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 text-sm outline-none transition"
               onChange={(e) => setMaxClicks(e.target.value)}
             />
-          </div>
-        </div>
-      )}
-
-      {isAuthenticated && (
-        <div className="mt-4">
-          <label
-            htmlFor="customSlug"
-            className="block text-sm font-medium text-gray-700 mb-2"
-          >
-            Custom Slug (optional)
-          </label>
-          <input
-            type="text"
-            id="customSlug"
-            value={customSlug}
-            onChange={(e) => setCustomSlug(() => e.target.value)}
-            placeholder="your-custom-slug"
-            className="w-full min-w-0 px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 text-sm outline-none transition"
-          />
-        </div>
-      )}
-      {/* generate qr button, view qr button */}
-      {/* {true ? ( */}
-      {isAuthenticated && shortUrl ? (
-        qrUrl ? (
-        // true ? (
-          <div className="mt-6 flex flex-col md:flex-row md:items-center gap-3">
-            <button
-              type="submit"
-              disabled={loading}
-              onClick={handleShowQr}
-              className="w-full md:w-auto px-6 py-3 bg-green-600 hover:bg-green-700 disabled:bg-green-400 text-white cursor-pointer disabled:cursor-not-allowed font-semibold rounded-lg shadow-md text-center"
-            >
-              {loading ? "Showing QR..." : "Show QR"}
-            </button>
-          </div>
-        ) : (
-          <div className="mt-6 flex justify-center">
-            <button
-              type="submit"
-              disabled={loading}
-              onClick={() => handleGenerateQr(shortUrl)}
-              className="w-full md:w-auto px-6 py-3 bg-red-600 hover:bg-red-700 disabled:bg-red-400 text-white disabled:cursor-not-allowed cursor-pointer font-semibold rounded-lg shadow-md text-center"
-            >
-              {loading ? "Generating QR..." : "Generate QR"}
-            </button>
-          </div>
-        )
-      ) : null}
-      {/* {shortUrl && ( */}
-      {true && (
-        <div className="mt-6 p-3 bg-green-50 border border-green-200 rounded-lg">
-          <label className="block text-center text-sm font-semibold text-gray-700 mb-2">
-            Your short URL
-          </label>
-          <div className="flex items-center gap-2 flex-col sm:flex-row">
-            <input
-              type="text"
-              value={shortUrl}
-              readOnly
-              className="flex-1 min-w-0 truncate px-3 py-2 bg-white border border-gray-300 rounded text-sm"
-            />
-            <button
-              onClick={handleCopy}
-              className={`w-full sm:w-auto px-4 py-2 text-sm rounded transition ${
-                copied
-                  ? "bg-green-600 text-white"
-                  : "bg-blue-600 hover:bg-blue-700 text-white"
-              }`}
-            >
-              {copied ? "Copied!" : "Copy"}
-            </button>
           </div>
         </div>
       )}

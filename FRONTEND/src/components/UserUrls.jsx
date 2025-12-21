@@ -186,8 +186,8 @@ const UserUrls = () => {
           <tbody className="bg-white divide-y divide-gray-200">
             {urls.urls.reverse().map((url) => (
               <tr key={url._id} className="hover:bg-gray-50">
-                <td className="px-6 py-4">
-                  <div className="text-sm text-gray-900 truncate max-w-xs">
+                <td className="px-6 py-4 max-w-xs">
+                  <div className="text-sm text-gray-90 block truncate max-w-[120px] md:max-w-[160px]">
                     {url.full_url}
                   </div>
                 </td>
@@ -198,7 +198,7 @@ const UserUrls = () => {
                       href={`${import.meta.env.VITE_BACKEND_URI}/${url.short_url}`}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-blue-600 hover:text-blue-900 hover:underline"
+                      className="text-blue-600 block truncate max-w-[120px] md:max-w-[160px] hover:text-blue-900 hover:underline"
                     >
                       {/* {`localhost:3000/${url.short_url}`} */}
                       {`${import.meta.env.VITE_BACKEND_URI}/${url.short_url}`}
