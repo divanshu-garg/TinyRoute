@@ -7,10 +7,9 @@ This project is designed with **real-world backend engineering practices**, focu
 
 ## 🚀 Live Demo
 
-- **Frontend (Vercel):** https://your-frontend-url.vercel.app  
-- **Backend API (Railway):** https://your-backend-url.railway.app  
-
-
+- **Frontend (Vercel):** https://tiny-route.vercel.app/  
+<!-- - **Backend API (Railway):** https://your-backend-url.railway.app -->
+- **Backend API (render):** https://tinyroute-dx2o.onrender.com/ 
 
 ## 🎯 Problem Statement
 
