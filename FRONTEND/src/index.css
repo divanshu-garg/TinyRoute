@@ -1,1 +1,24 @@
 @import "tailwindcss";
+
+@theme {
+  --font-mono: "Geist Mono", "Fira Code", ui-monospace, monospace;
+  --font-sans: "Geist", "DM Sans", ui-sans-serif, sans-serif;
+
+  --color-base: #0d0f11;
+  --color-surface: #161a1e;
+  --color-overlay: #1e2329;
+  --color-border: #252b33;
+  --color-border-sub: #1a1f26;
+
+  --color-text-primary: #e8eaed;
+  --color-text-default: #c9cdd2;
+  --color-text-muted: #8b9299;
+  --color-text-faint: #4a5260;
+
+  --color-accent: #10b981;
+  --color-accent-hover: #34d399;
+  --color-accent-dim: #065f46;
+
+  --color-danger: #f87171;
+  --color-danger-bg: #1a1211;
+}

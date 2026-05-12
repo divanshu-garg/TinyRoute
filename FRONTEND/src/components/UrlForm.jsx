@@ -5,6 +5,31 @@ import { queryClient } from "../main.jsx";
 import { generateQr } from "../api/qr.api.js";
 import QrPopup from "./QrPopup.jsx";
 
+const Input = ({ label, id, className = "", ...props }) => (
+  <div>
+    {label && (
+      <label
+        htmlFor={id}
+        className="block text-xs font-medium text-text-muted mb-1.5"
+      >
+        {label}
+      </label>
+    )}
+    <input
+      id={id}
+      className={`w-full bg-base border border-border rounded-md px-3 py-2.5 text-sm text-text-primary
+        placeholder-text-faint outline-none focus:border-accent/60 focus:ring-1 focus:ring-accent/20
+        transition-colors ${className}`}
+      {...props}
+    />
+  </div>
+);
+
+const ensureValidUrl = (url) =>
+  url.startsWith("http://") || url.startsWith("https://")
+    ? url
+    : "https://" + url;
+
 const UrlForm = () => {
   const [longUrl, setLongUrl] = useState("");
   const [shortUrl, setShortUrl] = useState("");
@@ -14,44 +39,39 @@ const UrlForm = () => {
   const [loading, setLoading] = useState(false);
   const [qrUrl, setQrUrl] = useState("");
   const [showQr, setShowQr] = useState(false);
-  const [maxClicks, setMaxClicks] = useState(null);
-  const [expiresAt, setExpiresAt] = useState(null);
+  const [maxClicks, setMaxClicks] = useState("");
+  const [expiresAt, setExpiresAt] = useState("");
+  const [advancedOpen, setAdvancedOpen] = useState(false);
   const { isAuthenticated } = useSelector((state) => state.auth);
-  // console.log(longUrl);
-
-  const ensureValidUrl = (url) => {
-    if (!url.startsWith("https://") && !url.startsWith("http://")) {
-      return "https://" + url;
-    }
-    return url;
-  };
 
   const handleSubmit = async () => {
     setError("");
     setShortUrl("");
-    setLoading(true);
     setQrUrl("");
+    setLoading(true);
+
     const validUrl = ensureValidUrl(longUrl);
     setLongUrl(validUrl);
-    console.log(validUrl);
 
     try {
-      let data;
-      if (isAuthenticated && customSlug)
-        data = await createCustomShortUrl(
-          validUrl,
-          customSlug,
-          maxClicks,
-          expiresAt
-        );
-      else data = await createShortUrl(validUrl, maxClicks, expiresAt);
-      console.log("data:", data);
-      await setShortUrl(data.short_url);
+      const data =
+        isAuthenticated && customSlug
+          ? await createCustomShortUrl(
+              validUrl,
+              customSlug,
+              maxClicks || null,
+              expiresAt || null,
+            )
+          : await createShortUrl(
+              validUrl,
+              maxClicks || null,
+              expiresAt || null,
+            );
+      setShortUrl(data.short_url);
       queryClient.invalidateQueries({ queryKey: ["userUrls"] });
-    } catch (error) {
-      console.log("an error occured while shortening url", error);
+    } catch (err) {
       setError(
-        error.response?.data?.message || "An error occurred. Please try again."
+        err.response?.data?.message ?? "An error occurred. Please try again.",
       );
     } finally {
       setLoading(false);
@@ -61,40 +81,27 @@ const UrlForm = () => {
   const handleCopy = () => {
     navigator.clipboard.writeText(shortUrl);
     setCopied(true);
-    setTimeout(() => {
-      setCopied(false);
-    }, 2000);
+    setTimeout(() => setCopied(false), 2000);
   };
 
-  const handleGenerateQr = async (shortUrl) => {
+  const handleGenerateQr = async () => {
     setError("");
     setLoading(true);
     try {
-      const generatedQr = await generateQr(shortUrl.split("/").slice(-1)[0]);
-      if (generatedQr?.qr_code_link) {
+      const res = await generateQr(shortUrl.split("/").pop());
+      if (res?.qr_code_link) {
+        setQrUrl(res.qr_code_link);
         queryClient.invalidateQueries({ queryKey: ["userUrls"] });
-        return setQrUrl(generatedQr.qr_code_link);
       }
-    } catch (error) {
-      console.log("an error occured while generating qr", error);
-      setError(
-        error.response?.data?.message || "An error occurred. Please try again."
-      );
+    } catch (err) {
+      setError(err.response?.data?.message ?? "Failed to generate QR code.");
     } finally {
       setLoading(false);
     }
   };
 
-  const handleShowQr = () => {
-    setShowQr(true);
-    // <QrPopup  />
-  };
-
   return (
-    <div
-      // className="mb-25"
-      className="mb-6 max-w-[900px] w-full mx-auto px-3"
-    >
+    <div className="space-y-5">
       {showQr && (
         <QrPopup
           showQr={showQr}
@@ -103,143 +110,130 @@ const UrlForm = () => {
           shortUrl={shortUrl}
         />
       )}
-      <div className="space-y-4">
-        <div>
-          <label
-            htmlFor="url"
-            className="block text-sm font-medium text-gray-700 mb-2"
-          >
-            Enter your URL
-          </label>
-          <input
-            type="url"
+
+      <div className="flex gap-2 flex-col sm:flex-row">
+        <div className="flex-1">
+          <Input
             id="url"
+            type="url"
             value={longUrl}
-            onChange={(e) => setLongUrl(() => e.target.value)}
-            placeholder="https://example.com"
-            // className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition"
-            className="w-full min-w-0 px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition text-sm break-words"
-            required
+            onChange={(e) => setLongUrl(e.target.value)}
+            placeholder="https://your-very-long-url.com/goes/here"
           />
         </div>
-        {error && (
-          <div className="p-3 bg-red-50 border border-red-200 text-red-700 rounded-lg text-sm">
-            {error}
-          </div>
-        )}
         <button
-          type="submit"
           onClick={handleSubmit}
-          disabled={loading}
-          className="w-full text-center bg-blue-600 cursor-pointer hover:bg-blue-700 disabled:bg-blue-400 text-white font-semibold py-3 px-4 rounded-lg transition duration-200"
+          disabled={loading || !longUrl}
+          className="sm:w-auto w-full px-5 py-2.5 text-sm font-semibold text-base bg-accent
+            hover:bg-accent-hover disabled:bg-accent-dim disabled:text-text-faint disabled:cursor-not-allowed
+            rounded-md transition-colors duration-150 shrink-0"
         >
-          {loading ? "Shortening..." : "Shorten URL"}
+          {loading ? "Shortening…" : "Shorten"}
         </button>
       </div>
+
+      {error && (
+        <div className="flex items-center gap-2 px-3 py-2 rounded-md bg-danger-bg border border-danger/50 text-danger text-xs">
+          <span className="size-1.5 rounded-full bg-danger shrink-0" />
+          {error}
+        </div>
+      )}
+
       {shortUrl && (
-      // {true && (
-        <div className="mt-6 p-3 bg-green-50 border border-green-200 rounded-lg">
-          <label className="block text-center text-sm font-semibold text-gray-700 mb-2">
-            Your short URL
-          </label>
-          <div className="flex items-center gap-2 flex-col sm:flex-row">
-            <input
-              type="text"
-              value={shortUrl}
-              readOnly
-              className="flex-1 min-w-0 truncate px-3 py-2 bg-white border border-gray-300 rounded text-sm"
-            />
-            <button
-              onClick={handleCopy}
-              className={`w-full sm:w-auto px-4 py-2 text-sm rounded transition ${
-                copied
-                  ? "bg-green-600 text-white"
-                  : "bg-blue-600 hover:bg-blue-700 text-white"
-              }`}
-            >
-              {copied ? "Copied!" : "Copy"}
-            </button>
-          </div>
-        </div>
-      )}
-      {/* generate qr button, view qr button */}
-      {isAuthenticated && shortUrl ? (
-        qrUrl ? (
-        // true ? (
-          <div className="mt-6 flex flex-col justify-center md:flex-row md:items-center gap-3">
-            <button
-              type="submit"
-              disabled={loading}
-              onClick={handleShowQr}
-              className="w-full md:w-auto px-6 py-3 bg-green-600 hover:bg-green-700 disabled:bg-green-400 text-white cursor-pointer disabled:cursor-not-allowed font-semibold rounded-lg shadow-md text-center"
-            >
-              {loading ? "Showing QR..." : "Show QR"}
-            </button>
-          </div>
-        ) : (
-          <div className="mt-6 flex justify-center">
-            <button
-              type="submit"
-              disabled={loading}
-              onClick={() => handleGenerateQr(shortUrl)}
-              className="w-full md:w-auto px-6 py-3 bg-red-600 hover:bg-red-700 disabled:bg-red-400 text-white disabled:cursor-not-allowed cursor-pointer font-semibold rounded-lg shadow-md text-center"
-            >
-              {loading ? "Generating QR..." : "Generate QR"}
-            </button>
-          </div>
-        )
-      ) : null}
-      {isAuthenticated && (
-        <div className="mt-4">
-          <label
-            htmlFor="customSlug"
-            className="block text-sm font-medium text-gray-700 mb-2"
+        <div className="flex items-center gap-2 p-3 rounded-md bg-accent/5 border border-accent/20">
+          <span className="size-1.5 rounded-full bg-accent shrink-0" />
+          <a
+            href={shortUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex-1 min-w-0 text-sm text-accent hover:text-accent-hover truncate font-mono transition-colors"
           >
-            Custom Slug (optional)
-          </label>
-          <input
-            type="text"
-            id="customSlug"
-            value={customSlug}
-            onChange={(e) => setCustomSlug(() => e.target.value)}
-            placeholder="your-custom-slug"
-            className="w-full min-w-0 px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 text-sm outline-none transition"
-          />
+            {shortUrl}
+          </a>
+          <button
+            onClick={handleCopy}
+            className={`shrink-0 px-3 py-1.5 text-xs rounded-md border transition-colors duration-150 font-medium
+              ${
+                copied
+                  ? "bg-accent/20 border-accent/40 text-accent"
+                  : "bg-text-primary/4 border-text-primary/8 text-text-muted hover:text-text-primary hover:border-text-primary/20"
+              }`}
+          >
+            {copied ? "Copied" : "Copy"}
+          </button>
+
+          {isAuthenticated &&
+            (qrUrl ? (
+              <button
+                onClick={() => setShowQr(true)}
+                className="shrink-0 px-3 py-1.5 text-xs rounded-md border border-text-primary/8 bg-text-primary/4
+                  text-text-muted hover:text-text-primary hover:border-text-primary/20 transition-colors"
+              >
+                View QR
+              </button>
+            ) : (
+              <button
+                onClick={handleGenerateQr}
+                disabled={loading}
+                className="shrink-0 px-3 py-1.5 text-xs rounded-md border border-text-primary/8 bg-text-primary/4
+                  text-text-muted hover:text-text-primary hover:border-text-primary/20 disabled:opacity-40 transition-colors"
+              >
+                Gen QR
+              </button>
+            ))}
         </div>
       )}
-      {/* expiry feature: */}
+
       {isAuthenticated && (
-        <div className="space-y-4 mt-4 p-4 bg-gray-50 rounded-lg">
-          <h3 className="text-sm font-semibold underline text-gray-700 mb-4">
-            Advanced Options (Optional)
-          </h3>
+        <div className="space-y-4">
+          <Input
+            label="Custom slug (optional)"
+            id="customSlug"
+            type="text"
+            value={customSlug}
+            onChange={(e) => setCustomSlug(e.target.value)}
+            placeholder="my-custom-slug"
+          />
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Expiry Date
-            </label>
-            <input
-              type="datetime-local"
-              id="expiryDate"
-              value={expiresAt || ""}
-              className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
-              onChange={(e) => setExpiresAt(e.target.value)}
-            />
-          </div>
+          <button
+            onClick={() => setAdvancedOpen((p) => !p)}
+            className="flex items-center gap-1.5 text-xs text-text-muted hover:text-text-primary transition-colors"
+          >
+            <svg
+              className={`size-3.5 transition-transform ${advancedOpen ? "rotate-90" : ""}`}
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M9 5l7 7-7 7"
+              />
+            </svg>
+            Advanced options
+          </button>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Max Clicks
-            </label>
-            <input
-              type="number"
-              id="maxClicks"
-              value={maxClicks || ""}
-              placeholder="Leave empty for unlimited"
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 text-sm outline-none transition"
-              onChange={(e) => setMaxClicks(e.target.value)}
-            />
-          </div>
+          {advancedOpen && (
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-1">
+              <Input
+                label="Expiry date"
+                id="expiryDate"
+                type="datetime-local"
+                value={expiresAt}
+                onChange={(e) => setExpiresAt(e.target.value)}
+              />
+              <Input
+                label="Max clicks"
+                id="maxClicks"
+                type="number"
+                value={maxClicks}
+                onChange={(e) => setMaxClicks(e.target.value)}
+                placeholder="Unlimited"
+              />
+            </div>
+          )}
         </div>
       )}
     </div>
